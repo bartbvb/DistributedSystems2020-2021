@@ -65,8 +65,8 @@ public class Car {
 		List<Reservation> reserv = new ArrayList<Reservation>();
 
     	for(Reservation res: reservations) {
-    		if(res.getCarRenter() == clientName)
-    		reserv.add(res);
+    		if(res.getCarRenter().equals(clientName))
+    		    reserv.add(res);
     	}
     	return reserv;
     }

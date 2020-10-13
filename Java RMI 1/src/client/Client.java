@@ -39,6 +39,15 @@ public class Client extends AbstractTestBooking {
 		
 		String carRentalCompanyName = "Hertz";
 
+		System.setSecurityManager(null);
+		try{
+			Registry registry = LocateRegistry.getRegistry();
+			iCRC = (ICarRentalCompany) registry.lookup(carRentalCompanyName);
+
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
+
 		// An example reservation scenario on car rental company 'Hertz' would be...
 		Client client = new Client("simpleTrips", carRentalCompanyName, localOrRemote);
 		client.run();
@@ -50,14 +59,6 @@ public class Client extends AbstractTestBooking {
 
 	public Client(String scriptFile, String carRentalCompanyName, int localOrRemote) {
 		super(scriptFile);
-		System.setSecurityManager(null);
-		try{
-			Registry registry = LocateRegistry.getRegistry();
-			iCRC = (ICarRentalCompany) registry.lookup(carRentalCompanyName);
-
-		} catch (RemoteException | NotBoundException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -97,13 +98,13 @@ public class Client extends AbstractTestBooking {
 	protected Quote createQuote(String clientName, Date start, Date end, String carType, String region)
 			throws Exception {
 		Quote quote = null;
-		try {
+		//try {
 			ReservationConstraints constraints = new ReservationConstraints(start, end, carType, region);
 			quote = iCRC.createQuote(constraints, clientName);
 			System.out.println(quote);
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		/*} catch (Exception e){
+			System.out.println(e.getMessage());
+		}*/
 		return quote;
 	}
 
@@ -122,7 +123,8 @@ public class Client extends AbstractTestBooking {
 			reservation = iCRC.confirmQuote(quote);
 			System.out.println(reservation);
 		} catch(Exception e){
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			iCRC.cancelReservation(reservation);
 		}
 		return reservation;
 	}

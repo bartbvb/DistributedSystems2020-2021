@@ -204,7 +204,7 @@ public class CarRentalCompany implements ICarRentalCompany {
 		int nrOfReservations = 0;
 		
 		for(Car car: cars) {
-			if(car.getType().getName() == carType) {
+			if(car.getType().getName().equals(carType)) {
 				nrOfReservations += car.getNrOfReservations();
 			}
 		}

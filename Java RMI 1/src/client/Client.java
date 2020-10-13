@@ -1,10 +1,18 @@
 package client;
 
+import java.rmi.NotBoundException;
 import java.util.Date;
 import java.util.List;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+
+import rental.ICarRentalCompany;
 import rental.Quote;
 import rental.Reservation;
+import rental.ReservationConstraints;
 
 public class Client extends AbstractTestBooking {
 
@@ -14,6 +22,7 @@ public class Client extends AbstractTestBooking {
 
 	private final static int LOCAL = 0;
 	private final static int REMOTE = 1;
+	public static ICarRentalCompany iCRC;
 
 	/**
 	 * The `main` method is used to launch the client application and run the test
@@ -37,8 +46,14 @@ public class Client extends AbstractTestBooking {
 
 	public Client(String scriptFile, String carRentalCompanyName, int localOrRemote) {
 		super(scriptFile);
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		System.setSecurityManager(null);
+		try{
+			Registry registry = LocateRegistry.getRegistry();
+			iCRC = (ICarRentalCompany) registry.lookup(carRentalCompanyName);
+
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -51,8 +66,12 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected void checkForAvailableCarTypes(Date start, Date end) throws Exception {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		try {
+			iCRC.getAvailableCarTypes(start, end);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -70,8 +89,10 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected Quote createQuote(String clientName, Date start, Date end, String carType, String region)
 			throws Exception {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		Quote quote = null;
+		ReservationConstraints constraints = new ReservationConstraints(start,end,carType,region);
+		quote = iCRC.createQuote(constraints,clientName);
+		return quote;
 	}
 
 	/**
@@ -84,8 +105,9 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected Reservation confirmQuote(Quote quote) throws Exception {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		Reservation reservation = null;
+		reservation = iCRC.confirmQuote(quote);
+		return reservation;
 	}
 
 	/**

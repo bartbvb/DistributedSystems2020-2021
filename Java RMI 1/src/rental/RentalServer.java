@@ -31,7 +31,10 @@ public class RentalServer {
 		// The first argument passed to the `main` method (if present)
 		// indicates whether the application is run on the remote setup or not.
 		int localOrRemote = (args.length == 1 && args[0].equals("REMOTE")) ? REMOTE : LOCAL;
-
+		if(localOrRemote == 1) {
+			throw new UnsupportedOperationException("Remote set-up not implemented yet");
+		}
+		
 		CrcData data  = loadData("hertz.csv");
 		ICarRentalCompany rentalCompany = new CarRentalCompany(data.name, data.regions, data.cars);
 		

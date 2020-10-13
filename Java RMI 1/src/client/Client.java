@@ -3,6 +3,10 @@ package client;
 import java.rmi.NotBoundException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+
+//import com.sun.tools.classfile.Opcode.Set;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -13,6 +17,7 @@ import rental.ICarRentalCompany;
 import rental.Quote;
 import rental.Reservation;
 import rental.ReservationConstraints;
+import rental.CarType;
 
 public class Client extends AbstractTestBooking {
 
@@ -32,7 +37,10 @@ public class Client extends AbstractTestBooking {
 		// The first argument passed to the `main` method (if present)
 		// indicates whether the application is run on the remote setup or not.
 		int localOrRemote = (args.length == 1 && args[0].equals("REMOTE")) ? REMOTE : LOCAL;
-
+		if(localOrRemote == 1) {
+			throw new UnsupportedOperationException("Remote set-up not implemented yet");
+		}
+		
 		String carRentalCompanyName = "Hertz";
 
 		// An example reservation scenario on car rental company 'Hertz' would be...
@@ -67,7 +75,10 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected void checkForAvailableCarTypes(Date start, Date end) throws Exception {
 		try {
-			iCRC.getAvailableCarTypes(start, end);
+			Set<CarType> cars = iCRC.getAvailableCarTypes(start, end);
+			for(CarType i: cars) {
+				System.out.println(i);
+			} 
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -92,6 +103,7 @@ public class Client extends AbstractTestBooking {
 		Quote quote = null;
 		ReservationConstraints constraints = new ReservationConstraints(start,end,carType,region);
 		quote = iCRC.createQuote(constraints,clientName);
+		System.out.println(quote);
 		return quote;
 	}
 
@@ -107,6 +119,7 @@ public class Client extends AbstractTestBooking {
 	protected Reservation confirmQuote(Quote quote) throws Exception {
 		Reservation reservation = null;
 		reservation = iCRC.confirmQuote(quote);
+		System.out.println(reservation);
 		return reservation;
 	}
 
@@ -120,8 +133,21 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected List<Reservation> getReservationsByRenter(String clientName) throws Exception {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		List<Reservation>reservations = iCRC.getReservationsByUser(clientName);
+		for(Reservation res: reservations) {
+			System.out.println("");
+			System.out.print("carType: ");
+			System.out.print(res.getCarType());
+			System.out.print("   carID: ");
+			System.out.print(res.getCarId());
+			System.out.print("   period: ");
+			System.out.print(res.getStartDate());
+			System.out.print("-");
+			System.out.print(res.getEndDate());
+			System.out.print("   price: ");
+			System.out.print(res.getRentalPrice());
+		}
+		return reservations;
 	}
 
 	/**
@@ -134,7 +160,8 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected int getNumberOfReservationsForCarType(String carType) throws Exception {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		int nrOfReservations = iCRC.getNumberOfReservationsForCarType(carType);
+		return nrOfReservations;
 	}
+	
 }

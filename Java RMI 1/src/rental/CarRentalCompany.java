@@ -131,7 +131,7 @@ public class CarRentalCompany implements ICarRentalCompany {
 
 	
 	public Quote createQuote(ReservationConstraints constraints, String client)
-			throws ReservationException {
+			throws ReservationException, RemoteException {
 		logger.log(Level.INFO, "<{0}> Creating tentative reservation for {1} with constraints {2}", 
                         new Object[]{name, client, constraints.toString()});
 		
@@ -154,7 +154,7 @@ public class CarRentalCompany implements ICarRentalCompany {
 	}
 
 	
-	public Reservation confirmQuote(Quote quote) throws ReservationException {
+	public Reservation confirmQuote(Quote quote) throws ReservationException, RemoteException {
 		logger.log(Level.INFO, "<{0}> Reservation of {1}", new Object[]{name, quote.toString()});
 		List<Car> availableCars = getAvailableCars(quote.getCarType(), quote.getStartDate(), quote.getEndDate());
 		if(availableCars.isEmpty())
@@ -173,7 +173,7 @@ public class CarRentalCompany implements ICarRentalCompany {
 	}
 	
 	
-	public String toString() {
+	public String toString(){
 		return String.format("<%s> CRC is active in regions %s and serving with %d car types", name, listToString(regions), carTypes.size());
 	}
 	

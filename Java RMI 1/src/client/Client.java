@@ -13,11 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 
-import rental.ICarRentalCompany;
-import rental.Quote;
-import rental.Reservation;
-import rental.ReservationConstraints;
-import rental.CarType;
+import rental.*;
 
 public class Client extends AbstractTestBooking {
 
@@ -101,9 +97,13 @@ public class Client extends AbstractTestBooking {
 	protected Quote createQuote(String clientName, Date start, Date end, String carType, String region)
 			throws Exception {
 		Quote quote = null;
-		ReservationConstraints constraints = new ReservationConstraints(start,end,carType,region);
-		quote = iCRC.createQuote(constraints,clientName);
-		System.out.println(quote);
+		try {
+			ReservationConstraints constraints = new ReservationConstraints(start, end, carType, region);
+			quote = iCRC.createQuote(constraints, clientName);
+			System.out.println(quote);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		return quote;
 	}
 
@@ -118,8 +118,12 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected Reservation confirmQuote(Quote quote) throws Exception {
 		Reservation reservation = null;
-		reservation = iCRC.confirmQuote(quote);
-		System.out.println(reservation);
+		try {
+			reservation = iCRC.confirmQuote(quote);
+			System.out.println(reservation);
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 		return reservation;
 	}
 
@@ -134,18 +138,22 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected List<Reservation> getReservationsByRenter(String clientName) throws Exception {
 		List<Reservation>reservations = iCRC.getReservationsByUser(clientName);
-		for(Reservation res: reservations) {
-			System.out.println("");
-			System.out.print("carType: ");
-			System.out.print(res.getCarType());
-			System.out.print("   carID: ");
-			System.out.print(res.getCarId());
-			System.out.print("   period: ");
-			System.out.print(res.getStartDate());
-			System.out.print("-");
-			System.out.print(res.getEndDate());
-			System.out.print("   price: ");
-			System.out.print(res.getRentalPrice());
+		try {
+			for (Reservation res : reservations) {
+				System.out.println("");
+				System.out.print("carType: ");
+				System.out.print(res.getCarType());
+				System.out.print("   carID: ");
+				System.out.print(res.getCarId());
+				System.out.print("   period: ");
+				System.out.print(res.getStartDate());
+				System.out.print("-");
+				System.out.print(res.getEndDate());
+				System.out.print("   price: ");
+				System.out.print(res.getRentalPrice());
+			}
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 		return reservations;
 	}
@@ -160,7 +168,12 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected int getNumberOfReservationsForCarType(String carType) throws Exception {
-		int nrOfReservations = iCRC.getNumberOfReservationsForCarType(carType);
+		int nrOfReservations = 0;
+		try {
+			nrOfReservations = iCRC.getNumberOfReservationsForCarType(carType);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		return nrOfReservations;
 	}
 	

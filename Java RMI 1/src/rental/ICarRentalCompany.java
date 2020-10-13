@@ -36,13 +36,13 @@ public interface ICarRentalCompany extends Remote{
 	 * RESERVATIONS *
 	 ****************/
 
-	Quote createQuote(ReservationConstraints constraints, String client) throws ReservationException;
+	Quote createQuote(ReservationConstraints constraints, String client) throws ReservationException, RemoteException;
 
-	Reservation confirmQuote(Quote quote) throws ReservationException;
+	Reservation confirmQuote(Quote quote) throws ReservationException, RemoteException;
 
 	void cancelReservation(Reservation res) throws RemoteException;
 
-	String toString();
+	//String toString() throws RemoteException;
 	
 	List<Reservation> getReservationsByUser(String clientName) throws RemoteException;
 	

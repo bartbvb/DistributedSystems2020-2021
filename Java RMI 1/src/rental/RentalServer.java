@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,16 +18,40 @@ public class RentalServer {
 	
 	private final static int LOCAL = 0;
 	private final static int REMOTE = 1;
+	
+	
 
 	public static void main(String[] args) throws ReservationException,
 			NumberFormatException, IOException {
+		
+		//set security manage
+		if(System.getSecurityManager() != null)
+			System.setSecurityManager(null);
+		
 		// The first argument passed to the `main` method (if present)
 		// indicates whether the application is run on the remote setup or not.
 		int localOrRemote = (args.length == 1 && args[0].equals("REMOTE")) ? REMOTE : LOCAL;
 
 		CrcData data  = loadData("hertz.csv");
-		new CarRentalCompany(data.name, data.regions, data.cars);
+		ICarRentalCompany rentalCompany = new CarRentalCompany(data.name, data.regions, data.cars);
 		
+		//locate Registry
+		Registry registry = null;
+		try {
+			registry = LocateRegistry.getRegistry();
+		} catch(RemoteException e) {
+			System.exit(-1);
+		}
+		
+		//register car rental company
+		ICarRentalCompany company;
+		try {
+			company = (ICarRentalCompany) UnicastRemoteObject.exportObject(rentalCompany, 0);
+			registry.rebind(rentalCompany.getName(), company);
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 	}
 
 	public static CrcData loadData(String datafile)

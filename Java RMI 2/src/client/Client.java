@@ -62,15 +62,41 @@ public class Client extends AbstractTestBooking {
 	}
 
 	/**
-	 * Check which car types are available in the given period (across all companies
-	 * and regions) and print this list of car types.
+	 * Create a new reservation session for the user with the given name.
 	 *
-	 * @param start start time of the period
-	 * @param end   end time of the period
+	 * @param name name of the client (renter) owning this session
+	 * @return the new reservation session
+	 *
 	 * @throws Exception if things go wrong, throw exception
 	 */
 	@Override
-	protected void checkForAvailableCarTypes(Date start, Date end) throws Exception {
+	protected Object getNewReservationSession(String name) throws Exception {
+		return null;
+	}
+
+	/**
+	 * Create a new manager session for the user with the given name (there is only one manager for all car rental companies).
+	 * @param name of the user (i.e. manager) using this session
+	 * @return the new manager session
+	 *
+	 * @throws Exception if things go wrong, throw exception
+	 */
+	@Override
+	protected Object getNewManagerSession(String name) throws Exception {
+		return null;
+	}
+
+	/**
+	 * Check which car types are available in the given period and print them.
+	 *
+	 * @param o the session to do the request from
+	 * @param start start time of the period
+	 * @param end end time of the period
+	 *
+	 * @throws Exception if things go wrong, throw exception
+	 */
+	@Override
+	protected void checkForAvailableCarTypes(Object o, Date start, Date end) throws Exception {
 		try {
 			Set<CarType> cars = iCRC.getAvailableCarTypes(start, end);
 			for(CarType i: cars) {
@@ -94,7 +120,6 @@ public class Client extends AbstractTestBooking {
 	 * 
 	 * @throws Exception if things go wrong, throw exception
 	 */
-	@Override
 	protected Quote createQuote(String clientName, Date start, Date end, String carType, String region)
 			throws Exception {
 		Quote quote = null;
@@ -109,6 +134,24 @@ public class Client extends AbstractTestBooking {
 	}
 
 	/**
+	 * Add a quote for a given car type to the session.
+	 *
+	 * @param o the session to add the reservation to
+	 * @param name the name of the client owning the session
+	 * @param start start time of the reservation
+	 * @param end end time of the reservation
+	 * @param carType type of car to be reserved
+	 * @param region region for which the car shall be reserved
+	 * should be done
+	 *
+	 * @throws Exception if things go wrong, throw exception
+	 */
+	@Override
+	protected void addQuoteToSession(Object o, String name, Date start, Date end, String carType, String region) throws Exception {
+
+	}
+
+	/**
 	 * Confirm the given quote to receive a final reservation of a car.
 	 * 
 	 * @param quote the quote to be confirmed
@@ -116,7 +159,6 @@ public class Client extends AbstractTestBooking {
 	 * 
 	 * @throws Exception if things go wrong, throw exception
 	 */
-	@Override
 	protected Reservation confirmQuote(Quote quote) throws Exception {
 		Reservation reservation = null;
 		try {
@@ -128,6 +170,18 @@ public class Client extends AbstractTestBooking {
 		}
 		return reservation;
 	}
+	/**
+	 * Confirm the quotes in the given session.
+	 *
+	 * @param o the session to finalize
+	 * @param name the name of the client owning the session
+	 *
+	 * @throws Exception if things go wrong, throw exception
+	 */
+	@Override
+	protected List<Reservation> confirmQuotes(Object o, String name) throws Exception {
+		return null;
+	}
 
 	/**
 	 * Get all reservations made by the given client.
@@ -137,8 +191,7 @@ public class Client extends AbstractTestBooking {
 	 * 
 	 * @throws Exception if things go wrong, throw exception
 	 */
-	@Override
-	protected List<Reservation> getReservationsByRenter(String clientName) throws Exception {
+	protected List<Reservation> getReservationsByRenter(Object ms, String clientName) throws Exception {
 		List<Reservation>reservations = iCRC.getReservationsByUser(clientName);
 		try {
 			for (Reservation res : reservations) {
@@ -161,15 +214,33 @@ public class Client extends AbstractTestBooking {
 	}
 
 	/**
-	 * Get the number of reservations for a particular car type.
-	 * 
-	 * @param carType name of the car type
-	 * @return number of reservations for the given car type
-	 * 
+	 * Get the number of reservations made by the given renter (across whole
+	 * rental agency).
+	 *
+	 * @param	ms manager session
+	 * @param clientName name of the renter
+	 * @return	the number of reservations of the given client (across whole
+	 * rental agency)
+	 *
 	 * @throws Exception if things go wrong, throw exception
 	 */
 	@Override
-	protected int getNumberOfReservationsForCarType(String carType) throws Exception {
+	protected int getNumberOfReservationsByRenter(Object ms, String clientName) throws Exception {
+		return 0;
+	}
+
+	/**
+	 * Get the number of reservations for a particular car type.
+	 *
+	 * @param ms manager session
+	 * @param carRentalName name of the rental company managed by this session
+	 * @param carType name of the car type
+	 * @return number of reservations for this car type
+	 *
+	 * @throws Exception if things go wrong, throw exception
+	 */
+	@Override
+	protected int getNumberOfReservationsForCarType(Object ms, String carRentalName, String carType) throws Exception {
 		int nrOfReservations = 0;
 		try {
 			nrOfReservations = iCRC.getNumberOfReservationsForCarType(carType);
@@ -178,5 +249,6 @@ public class Client extends AbstractTestBooking {
 		}
 		return nrOfReservations;
 	}
-	
+
+
 }

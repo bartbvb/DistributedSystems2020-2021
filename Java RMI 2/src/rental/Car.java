@@ -1,8 +1,10 @@
 package rental;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Car {
 
@@ -69,6 +71,11 @@ public class Car {
     		    reserv.add(res);
     	}
     	return reserv;
+    }
+
+    public int getNrOfReservationsByYear(int year){
+        List<Reservation> reservationsInYear = reservations.stream().filter(c -> c.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear() == year).collect(Collectors.toList());
+        return reservationsInYear.size();
     }
     
     public int getNrOfReservations(){

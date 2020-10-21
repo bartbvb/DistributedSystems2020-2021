@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class CarRentalCompany implements ICarRentalCompany {
 
@@ -203,14 +204,13 @@ public class CarRentalCompany implements ICarRentalCompany {
 		List<Reservation> reservations = new ArrayList<Reservation>();
 		
 		for(Car car: cars) {
-			List<Reservation>carReservations = car.getReservationsByRenter(clientName);
-			reservations.addAll(carReservations);
+			reservations.addAll(car.getReservationsByRenter(clientName));
 		}
 		
 		return reservations;
 	}
 
-	public int getNumberOfReservationsForCarType(String carType) throws RemoteException {
+	public int getNbOfReservationsForCarType(String carType) throws RemoteException {
 		int nrOfReservations = 0;
 		
 		for(Car car: cars) {
@@ -221,7 +221,18 @@ public class CarRentalCompany implements ICarRentalCompany {
 		
 		return nrOfReservations;
 	}
-	
-	
-	
+
+	@Override
+	public int getNbOfReservationsForCarTypeAndYear(String carType, int startYear) throws RemoteException {
+		int nrOfReservations = 0;
+		List<Car> rightCarType = cars.stream().filter(c -> c.getType().getName().equals(carType)).collect(Collectors.toList());
+
+		for (Car c : rightCarType){
+			nrOfReservations += c.getNrOfReservationsByYear(startYear);
+		}
+
+		return nrOfReservations;
+	}
+
+
 }

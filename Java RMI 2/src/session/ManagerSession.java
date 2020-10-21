@@ -1,11 +1,12 @@
 package session;
 
-import rental.Car;
-import rental.ICarRentalCompany;
-import rental.ICarType;
+import rental.*;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class ManagerSession implements IManagerSession{
 
@@ -22,7 +23,7 @@ public class ManagerSession implements IManagerSession{
 
     @Override
     public int getNrOfReservationsForCarType(String rentalName, String carType) throws RemoteException {
-        ICarRentalCompany iCRC = null; //TODO: RentalAgency.get()
+        ICarRentalCompany iCRC = null; //TODO: get(rentalName)
 
         int count = 0;
         ArrayList<Car> cars = iCRC.getCarsOfType(carType);
@@ -39,11 +40,27 @@ public class ManagerSession implements IManagerSession{
 
     @Override
     public int getNrOfReservationsByUser(String name) throws RemoteException {
-        return 0;
+        List<ICarRentalCompany> rentalCompanies = new ArrayList<>(); //TODO: get
+        int count = 0;
+        for (ICarRentalCompany iCRC : rentalCompanies){
+            count += iCRC.getReservationsByUser(name).size();
+        }
+        return count;
     }
 
     @Override
     public ICarType getMostPopularCarType(String rentalName, int year) throws RemoteException {
-        return null;
+        ICarRentalCompany iCRC = null; //TODO: get(rentalName)
+        ArrayList<CarType> cartypes = new ArrayList<>(iCRC.getAllCarTypes());
+        CarType mostPopular = null;
+        int timesRented, mostRented = 0;
+        for (CarType type : cartypes){
+            timesRented = iCRC.getNbOfReservationsForCarTypeAndYear(type.getName(),year);
+            if (timesRented > mostRented){
+                mostRented = timesRented;
+                mostPopular = type;
+            }
+        }
+        return mostPopular;
     }
 }

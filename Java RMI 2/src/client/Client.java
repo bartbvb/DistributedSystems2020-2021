@@ -243,7 +243,7 @@ public class Client extends AbstractTestBooking {
 	protected int getNumberOfReservationsForCarType(Object ms, String carRentalName, String carType) throws Exception {
 		int nrOfReservations = 0;
 		try {
-			nrOfReservations = iCRC.getNumberOfReservationsForCarType(carType);
+			nrOfReservations = iCRC.getNbOfReservationsForCarType(carType);
 		} catch (Exception e){
 			e.printStackTrace();
 		}

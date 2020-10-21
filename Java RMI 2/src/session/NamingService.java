@@ -1,4 +1,4 @@
-package namingService;
+package session;
 
 public class NamingService implements INamingService{
 

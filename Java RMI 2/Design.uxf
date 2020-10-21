@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>210</x>
+      <y>294</y>
+      <w>70</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>Client
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>357</x>
+      <y>245</y>
+      <w>231</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>NamingService
+remote
+--
+Map(&lt;String&gt;,&lt;Company&gt;) registeredCompanies
+List&lt;RentalSession&gt; rentalSessions
+List&lt;ManagerSession&gt; managerSessions
+--
+registerCompany(String name, RentalServer copmany)
+unregisterCompany(String name)
+createRentalSession(String user)
+createManagerSession()
+removeRentalSession(RentalSession session)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>651</x>
+      <y>287</y>
+      <w>112</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>RentalCompany
+remote
+--
+List&lt;NamingService&gt; namingServices
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>497</x>
+      <y>448</y>
+      <w>294</w>
+      <h>119</h>
+    </coordinates>
+    <panel_attributes>ManagerSession
+remote
+--
+stateless
+--
+registerCompany(String name, RentalServer companyServer )
+unregisterCompany(String name)
+getNrOfReservations(String name)
+getBestCustomers(String name)
+getReservationsByUser(String user)
+getMostPopularCar(Year year)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>42</x>
+      <y>448</y>
+      <w>378</w>
+      <h>119</h>
+    </coordinates>
+    <panel_attributes>ReservationSession
+remote
+--
+String user
+--
+createQuote(String clientName, Date start, Date end, String carType, String region)
+getCurrentQuote()
+confirmQuotes(List&lt;Quote&gt;)
+getAvailableCarTypes(Date start, Date end)
+getCheapestCarTypes(Date start, Date end)
+cleanSession()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>413</x>
+      <y>378</y>
+      <w>42</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1= 0..*
+m2= 1</panel_attributes>
+    <additional_attributes>10.0;100.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>469</x>
+      <y>378</y>
+      <w>49</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1= 0..*
+m2= 1</panel_attributes>
+    <additional_attributes>40.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>581</x>
+      <y>294</y>
+      <w>84</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1= 0..*
+m2= 1..*</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>273</x>
+      <y>294</y>
+      <w>98</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2= 0..*</panel_attributes>
+    <additional_attributes>120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>371</x>
+      <y>63</y>
+      <w>189</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>RentalServer
+--
+creates registry
+registers NamingService</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>553</x>
+      <y>105</y>
+      <w>196</w>
+      <h>196</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.
+look up Naming Service</panel_attributes>
+    <additional_attributes>10.0;10.0;220.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>238</x>
+      <y>105</y>
+      <w>182</w>
+      <h>203</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.
+look up Naming Service</panel_attributes>
+    <additional_attributes>190.0;10.0;10.0;270.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>126</y>
+      <w>56</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.
+registers</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

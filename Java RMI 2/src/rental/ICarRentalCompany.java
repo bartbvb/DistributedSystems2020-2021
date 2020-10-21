@@ -2,10 +2,7 @@ package rental;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public interface ICarRentalCompany extends Remote{
 
@@ -26,6 +23,8 @@ public interface ICarRentalCompany extends Remote{
 	Collection<CarType> getAllCarTypes() throws RemoteException;
 
 	CarType getCarType(String carTypeName) throws RemoteException;
+
+	ArrayList<Car> getCarsOfType(String type) throws RemoteException;
 
 	// mark
 	boolean isAvailable(String carTypeName, Date start, Date end) throws RemoteException;

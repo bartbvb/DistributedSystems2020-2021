@@ -9,7 +9,7 @@ import java.util.List;
 public class ReservationSession implements IReservationSession{
     @Override
     public void createQuote(String clientName, ReservationConstraints resCon) throws ReservationException, RemoteException {
-        
+
     }
 
     @Override

@@ -81,7 +81,17 @@ public class CarRentalCompany implements ICarRentalCompany {
 			return carTypes.get(carTypeName);
 		throw new IllegalArgumentException("<" + carTypeName + "> No car type of name " + carTypeName);
 	}
-	
+
+	@Override
+	public ArrayList<Car> getCarsOfType(String type) throws RemoteException {
+		ArrayList<Car> carsOfType = new ArrayList<>();
+		for (Car car : cars){
+			if(car.getType().getName().equals(type))
+				carsOfType.add(car);
+		}
+		return carsOfType;
+	}
+
 	// mark
 	
 	public boolean isAvailable(String carTypeName, Date start, Date end) {

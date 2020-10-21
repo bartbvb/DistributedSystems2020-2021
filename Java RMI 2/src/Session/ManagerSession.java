@@ -1,5 +1,6 @@
 package Session;
 
+import rental.Car;
 import rental.ICarRentalCompany;
 import rental.ICarType;
 
@@ -7,19 +8,28 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ManagerSession implements IManagerSession{
+
+    public ManagerSession() throws RemoteException{}
     @Override
     public void registerCompany(String name, ICarRentalCompany company) throws RemoteException {
-
+        //TODO: RentalAgency.register()
     }
 
     @Override
     public void unregisterCompany(String name) throws RemoteException {
-
+        //TODO: RentalAgency.unregister()
     }
 
     @Override
     public int getNrOfReservationsForCarType(String rentalName, String carType) throws RemoteException {
-        return 0;
+        ICarRentalCompany iCRC = null; //TODO: RentalAgency.get()
+
+        int count = 0;
+        ArrayList<Car> cars = iCRC.getCarsOfType(carType);
+        for (Car c : cars){
+            count += c.getNrOfReservations();
+        }
+        return count;
     }
 
     @Override

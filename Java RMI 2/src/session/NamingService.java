@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.tools.javac.util.List;
+import java.util.List;
 
 import rental.ICarRentalCompany;
 
@@ -57,7 +57,7 @@ public class NamingService implements INamingService{
 
 	//creates a reservationSession
 	public ReservationSession createReservationSession(String user) throws RemoteException {
-		ReservationSession session = new ReservationSession();
+		ReservationSession session = new ReservationSession(user);
 		rentalSessions.put(user, session);
 		return session;
 	}

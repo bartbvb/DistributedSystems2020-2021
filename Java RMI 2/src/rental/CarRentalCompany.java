@@ -237,5 +237,10 @@ public class CarRentalCompany implements ICarRentalCompany {
 	@Override
 	public boolean inRegion(String region) {return regions.contains(region);}
 
+	@Override
+	public List<Car> getAllCars() throws RemoteException {
+		return cars;
+	}
+
 
 }

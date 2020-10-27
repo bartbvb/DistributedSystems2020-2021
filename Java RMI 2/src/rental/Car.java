@@ -81,4 +81,6 @@ public class Car {
     public int getNrOfReservations(){
     	return reservations.size();
     }
+
+    public List<Reservation> getReservations() {return reservations;}
 }

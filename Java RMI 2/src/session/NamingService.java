@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.tools.javac.util.List;
+import java.util.List;
 
 import rental.CarType;
 import rental.ICarRentalCompany;

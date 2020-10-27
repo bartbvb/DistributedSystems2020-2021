@@ -234,5 +234,8 @@ public class CarRentalCompany implements ICarRentalCompany {
 		return nrOfReservations;
 	}
 
+	@Override
+	public boolean inRegion(String region) {return regions.contains(region);}
+
 
 }

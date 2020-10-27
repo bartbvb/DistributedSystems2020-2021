@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface IReservationSession extends Remote {
+    String getClientName() throws RemoteException;
     void createQuote(String clientName, ReservationConstraints resCon) throws ReservationException, RemoteException;
     List<Quote> getCurrentQuotes() throws RemoteException;
     List<Reservation> confirmQuotes() throws ReservationException, RemoteException;

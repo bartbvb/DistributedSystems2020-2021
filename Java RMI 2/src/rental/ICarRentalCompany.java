@@ -49,4 +49,5 @@ public interface ICarRentalCompany extends Remote{
 
 	int getNbOfReservationsForCarTypeAndYear(String carType, int startYear) throws RemoteException;
 
+	boolean inRegion(String region) throws RemoteException;
 }

@@ -19,11 +19,21 @@ public class ReservationSession implements IReservationSession{
         _clientName = name;
     }
 
+    /**
+     * @return The name of the client for this session.
+     * @throws RemoteException
+     */
     @Override
     public String getClientName() throws RemoteException{
         return _clientName;
     }
 
+    /**
+     * @param clientName The name of the client.
+     * @param resCon The reservation constraints for the quote.
+     * @throws ReservationException
+     * @throws RemoteException
+     */
     @Override
     public synchronized void createQuote(String clientName, ReservationConstraints resCon) throws ReservationException, RemoteException {
         ICarRentalCompany iCRC = null;
@@ -40,6 +50,7 @@ public class ReservationSession implements IReservationSession{
                 }
             }
         }
+
         //if we found a company in the region that was able to create a quote, add it to the list
         if(iCRC != null && q != null){
             _quoteList.add(q);
@@ -49,11 +60,20 @@ public class ReservationSession implements IReservationSession{
         }
     }
 
+    /**
+     * @return The list of quotes.
+     * @throws RemoteException
+     */
     @Override
     public synchronized List<Quote> getCurrentQuotes() throws RemoteException {
         return _quoteList;
     }
 
+    /**
+     * @return The list of confirmed quotes as reservations.
+     * @throws ReservationException
+     * @throws RemoteException
+     */
     @Override
     public synchronized List<Reservation> confirmQuotes() throws ReservationException, RemoteException {
         List<Reservation> reservations = new ArrayList<>();
@@ -75,6 +95,12 @@ public class ReservationSession implements IReservationSession{
         return reservations;
     }
 
+    /**
+     * @param start The start date.
+     * @param end The end date
+     * @return All car types available in the given period.
+     * @throws RemoteException
+     */
     @Override
     public synchronized List<ICarType> getAvailableCarTypes(Date start, Date end) throws RemoteException {
         List<ICarType> cars = new ArrayList<>();
@@ -84,6 +110,13 @@ public class ReservationSession implements IReservationSession{
         return cars;
     }
 
+    /**
+     * @param start The start date
+     * @param end The end date
+     * @param region The region to search in
+     * @return The cheapest car type in the given region during the given period.
+     * @throws RemoteException
+     */
     @Override
     public ICarType getCheapestCarType(Date start, Date end, String region) throws RemoteException {
         List<ICarType> cars = new ArrayList<>();
@@ -102,12 +135,21 @@ public class ReservationSession implements IReservationSession{
         return ret;
     }
 
+    /**
+     * Cleans the list of quotes.
+     * @throws RemoteException
+     */
     @Override
     public void cleanSession() throws RemoteException {
         _quoteList.clear();
     }
 
     private NamingService ns = null;
+    /**
+     * Searches the registry for the NamingService if we don't have one yet.
+     * @return The NamingService.
+     * @throws RemoteException
+     */
     private NamingService getNamingService() throws RemoteException{
         if(ns == null){
             try {

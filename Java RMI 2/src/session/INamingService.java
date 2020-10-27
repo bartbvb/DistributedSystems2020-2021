@@ -21,9 +21,7 @@ public interface INamingService extends Remote{
 	public Map<String, ICarRentalCompany> getRegisteredCompanies() throws RemoteException;
 	
 	public ReservationSession createReservationSession(String user) throws RemoteException;
-	
-	public ReservationSession getUserSession(String user) throws RemoteException;
-	
+		
 	public ManagerSession createManagerSession() throws RemoteException;
 	
 	public void removeRentalSession(ReservationSession session) throws RemoteException;

@@ -4,7 +4,7 @@ import java.rmi.NotBoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
+import java.util.StringTokenizer;
 
 //import com.sun.tools.classfile.Opcode.Set;
 
@@ -14,8 +14,11 @@ import java.rmi.registry.Registry;
 
 
 import rental.*;
+import session.INamingService;
+import session.IReservationSession;
+import session.IManagerSession;
 
-public class Client extends AbstractTestBooking {
+public class Client extends AbstractTestManagement {
 
 	/********
 	 * MAIN *
@@ -23,7 +26,8 @@ public class Client extends AbstractTestBooking {
 
 	private final static int LOCAL = 0;
 	private final static int REMOTE = 1;
-	public static ICarRentalCompany iCRC;
+	public static INamingService iNS;
+	public static IReservationSession iRS;
 
 	/**
 	 * The `main` method is used to launch the client application and run the test
@@ -32,25 +36,22 @@ public class Client extends AbstractTestBooking {
 	public static void main(String[] args) throws Exception {
 		// The first argument passed to the `main` method (if present)
 		// indicates whether the application is run on the remote setup or not.
-		int localOrRemote = (args.length == 1 && args[0].equals("REMOTE")) ? REMOTE : LOCAL;
-		if(localOrRemote == 1) {
-			throw new UnsupportedOperationException("Remote set-up not implemented yet");
-		}
+		//int localOrRemote = (args.length == 1 && args[0].equals("REMOTE")) ? REMOTE : LOCAL;
 		
-		String carRentalCompanyName = "Hertz";
+		String namingService = "naming Service";
 
 		System.setSecurityManager(null);
 		try{
 			Registry registry = LocateRegistry.getRegistry();
-			iCRC = (ICarRentalCompany) registry.lookup(carRentalCompanyName);
-
+			iNS = (INamingService) registry.lookup(namingService);
+			iRS = (IReservationSession) iNS.createReservationSession();
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
 		}
 
 		// An example reservation scenario on car rental company 'Hertz' would be...
-		Client client = new Client("simpleTrips", carRentalCompanyName, localOrRemote);
-		client.run();
+		//Client client = new Client("simpleTrips", namingService, localOrRemote);
+		//client.run();
 	}
 
 	/***************
@@ -98,7 +99,7 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected void checkForAvailableCarTypes(Object o, Date start, Date end) throws Exception {
 		try {
-			Set<CarType> cars = iCRC.getAvailableCarTypes(start, end);
+			Set<CarType> cars = iNS.getAvailableCarTypes(start, end);
 			for(CarType i: cars) {
 				System.out.println(i);
 			} 
@@ -249,6 +250,26 @@ public class Client extends AbstractTestBooking {
 		}
 		return nrOfReservations;
 	}
+
+	@Override
+	protected Set getBestClients(Object ms) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected String getCheapestCarType(Object session, Date start, Date end, String region) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected CarType getMostPopularCarTypeInCRC(Object ms, String carRentalCompanyName, int year) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 
 }

@@ -12,7 +12,7 @@ public class NamingService implements INamingService{
 
 	//Data sets
 	Map<String, ICarRentalCompany> registeredCompanies;
-	Map<String, ReservationSession> rentalSessions;
+	List<ReservationSession> rentalSessions;
 	List<ManagerSession> managerSessions;
 	
 	//final fields
@@ -56,9 +56,9 @@ public class NamingService implements INamingService{
 	}
 
 	//creates a reservationSession
-	public ReservationSession createReservationSession(String user) throws RemoteException {
-		ReservationSession session = new ReservationSession(user);
-		rentalSessions.put(user, session);
+	public ReservationSession createReservationSession() throws RemoteException {
+		ReservationSession session = new ReservationSession();
+		rentalSessions.add(session);
 		return session;
 	}
 
@@ -76,15 +76,10 @@ public class NamingService implements INamingService{
 	 *	the session will be removed from the active sessions and will no longer have any references to it
 	 */
 	public void removeRentalSession(ReservationSession session) throws RemoteException {
-		if (rentalSessions.containsValue(session)) {
-			Set<String> keys = rentalSessions.keySet();
-			for(String key: keys) {
-				if(rentalSessions.get(key) == session) {
-					rentalSessions.remove(key);
-					break;
-				}
-			}
+		if (rentalSessions.contains(session)) {
+			rentalSessions.remove(session);
 		}
+			
 	}
 
 }

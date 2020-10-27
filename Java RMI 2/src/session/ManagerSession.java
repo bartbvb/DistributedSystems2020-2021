@@ -54,7 +54,7 @@ public class ManagerSession implements IManagerSession{
      * @throws RemoteException
      */
     @Override
-    public ArrayList<String> getBestCustomers() throws RemoteException {
+    public Set<String> getBestCustomers() throws RemoteException {
         int maxReservations = 0;
         //Give scores
         Map<String, Integer> scores = new HashMap<>();
@@ -71,7 +71,7 @@ public class ManagerSession implements IManagerSession{
         }
         //Return all max customers
         int finalMaxReservations = maxReservations;
-        return new ArrayList<>(scores.entrySet().stream().filter(entry -> entry.getValue() == finalMaxReservations).map(Map.Entry::getKey).collect(Collectors.toList()));
+        return scores.entrySet().stream().filter(entry -> entry.getValue() == finalMaxReservations).map(Map.Entry::getKey).collect(Collectors.toSet());
     }
 
     /**

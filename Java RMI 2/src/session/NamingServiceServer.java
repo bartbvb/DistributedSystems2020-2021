@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 import rental.ReservationException;
 
-public class NamingServiceServer implements INamingService{
+public class NamingServiceServer{
 	
 
 	public static void main(String[] args) throws ReservationException,

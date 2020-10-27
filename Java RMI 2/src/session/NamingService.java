@@ -1,18 +1,21 @@
 package session;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.List;
+import com.sun.tools.javac.util.List;
 
+import rental.CarType;
 import rental.ICarRentalCompany;
+import rental.ReservationConstraints;
 
 public class NamingService implements INamingService{
 
 	//Data sets
 	Map<String, ICarRentalCompany> registeredCompanies;
-	List<ReservationSession> rentalSessions;
+	Map<String, ReservationSession> rentalSessions;
 	List<ManagerSession> managerSessions;
 	
 	//final fields
@@ -56,9 +59,9 @@ public class NamingService implements INamingService{
 	}
 
 	//creates a reservationSession
-	public ReservationSession createReservationSession() throws RemoteException {
-		ReservationSession session = new ReservationSession();
-		rentalSessions.add(session);
+	public ReservationSession createReservationSession(String user) throws RemoteException {
+		ReservationSession session = new ReservationSession(user);
+		rentalSessions.put(user, session);
 		return session;
 	}
 
@@ -76,10 +79,35 @@ public class NamingService implements INamingService{
 	 *	the session will be removed from the active sessions and will no longer have any references to it
 	 */
 	public void removeRentalSession(ReservationSession session) throws RemoteException {
-		if (rentalSessions.contains(session)) {
-			rentalSessions.remove(session);
+		if (rentalSessions.containsValue(session)) {
+			Set<String> keys = rentalSessions.keySet();
+			for(String key: keys) {
+				if(rentalSessions.get(key) == session) {
+					rentalSessions.remove(key);
+					break;
+				}
+			}
 		}
-			
+	}
+	
+	
+	public ReservationSession getUserSession(String user) throws RemoteException {
+		ReservationSession session;
+		try {
+			session = rentalSessions.get(user);
+			return session;
+		}catch (Exception e) {
+			session = this.createReservationSession(user);
+			return session;
+		}
+	}
+
+
+	@Override
+	public ReservationConstraints createConstraints(Date start, Date end, String carType, String region)
+			throws RemoteException {
+		ReservationConstraints constraints = new ReservationConstraints(start, end, carType, region);
+		return constraints;
 	}
 
 }

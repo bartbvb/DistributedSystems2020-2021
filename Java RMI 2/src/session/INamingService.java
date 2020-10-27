@@ -8,6 +8,7 @@ import java.util.Set;
 
 import rental.CarType;
 import rental.ICarRentalCompany;
+import rental.ReservationConstraints;
 
 public interface INamingService extends Remote{
 	
@@ -19,15 +20,17 @@ public interface INamingService extends Remote{
 	
 	public Map<String, ICarRentalCompany> getRegisteredCompanies() throws RemoteException;
 	
-	public ReservationSession createReservationSession() throws RemoteException;
+	public ReservationSession createReservationSession(String user) throws RemoteException;
+	
+	public ReservationSession getUserSession(String user) throws RemoteException;
 	
 	public ManagerSession createManagerSession() throws RemoteException;
 	
 	public void removeRentalSession(ReservationSession session) throws RemoteException;
 	
 	//querry resolution methods
-	
-	Set<CarType> getAvailableCarTypes(Date start, Date end) throws RemoteException;	
+		
+	public ReservationConstraints createConstraints(Date start, Date end, String carType, String region) throws RemoteException;
 	
 	
 }

@@ -1,5 +1,7 @@
 package rental;
 
+import session.NamingServiceServer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +29,8 @@ public class RentalServer {
 		//set security manage
 		if(System.getSecurityManager() != null)
 			System.setSecurityManager(null);
+
+		NamingServiceServer.main(args);
 		
 		// The first argument passed to the `main` method (if present)
 		// indicates whether the application is run on the remote setup or not.

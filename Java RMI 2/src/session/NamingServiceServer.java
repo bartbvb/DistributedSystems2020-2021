@@ -1,27 +1,18 @@
 package session;
 
-import java.io.BufferedReader;
+import rental.ReservationException;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.invoke.MethodHandles;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import rental.ReservationException;
 
 public class NamingServiceServer{
 	
 
 	public static void main(String[] args) throws ReservationException,
 			NumberFormatException, IOException {
-		
+
 		//set security manage
 		if(System.getSecurityManager() != null)
 			System.setSecurityManager(null);

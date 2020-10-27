@@ -4,7 +4,7 @@ import java.rmi.NotBoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
+
 
 //import com.sun.tools.classfile.Opcode.Set;
 
@@ -17,6 +17,7 @@ import rental.*;
 import session.INamingService;
 import session.IReservationSession;
 import session.IManagerSession;
+import session.NamingServiceServer;
 
 public class Client extends AbstractTestManagement<IReservationSession, IManagerSession> {
 
@@ -36,6 +37,7 @@ public class Client extends AbstractTestManagement<IReservationSession, IManager
 		// The first argument passed to the `main` method (if present)
 		// indicates whether the application is run on the remote setup or not.
 		//int localOrRemote = (args.length == 1 && args[0].equals("REMOTE")) ? REMOTE : LOCAL;
+		//NamingServiceServer.main(args);
 		
 		String namingService = "naming Service";
 

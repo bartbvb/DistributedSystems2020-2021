@@ -2,9 +2,11 @@
 .classpath
 .project
 Java RMI 1/build.xml
-Java RMI 1/build.xml
+Java RMI 2/build.xml
 Java RMI 1/debug.log
 Java RMI 1/Java RMI 1.iml
 Java RMI 1/bin/*
 Java RMI 1/out/*
+*/out/*
+*/bin/*
 *.zip

@@ -27,15 +27,9 @@ public class ReservationSession implements IReservationSession{
     @Override
     public synchronized void createQuote(String clientName, ReservationConstraints resCon) throws ReservationException, RemoteException {
         ICarRentalCompany iCRC = null;
-        NamingService ns = null;
-        try {
-            ns = (NamingService) LocateRegistry.getRegistry().lookup("naming Service");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        }
         Quote q = null;
 
-        for (ICarRentalCompany c : ns.getRegisteredCompanies().values()){
+        for (ICarRentalCompany c : getNamingService().getRegisteredCompanies().values()){
             if(c.inRegion(resCon.getRegion())){
                 iCRC = c;
                 try{
@@ -63,22 +57,16 @@ public class ReservationSession implements IReservationSession{
     @Override
     public synchronized List<Reservation> confirmQuotes() throws ReservationException, RemoteException {
         List<Reservation> reservations = new ArrayList<>();
-        NamingService ns = null;
-        try {
-            ns = (NamingService) LocateRegistry.getRegistry().lookup("naming Service");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        }
         try{
             for (Quote q : _quoteList){
-                ICarRentalCompany iCRC = ns.getRegisteredCompanies().get(q.getRentalCompany());
+                ICarRentalCompany iCRC = getNamingService().getRegisteredCompanies().get(q.getRentalCompany());
                 reservations.add(iCRC.confirmQuote(q));
             }
         }catch (ReservationException e){
             System.out.println(e.toString());
             //Cancel all reservations
             for(Reservation res : reservations){
-                ICarRentalCompany iCRC = ns.getRegisteredCompanies().get(res.getRentalCompany());
+                ICarRentalCompany iCRC = getNamingService().getRegisteredCompanies().get(res.getRentalCompany());
                 iCRC.cancelReservation(res);
             }
 
@@ -90,13 +78,7 @@ public class ReservationSession implements IReservationSession{
     @Override
     public synchronized List<ICarType> getAvailableCarTypes(Date start, Date end) throws RemoteException {
         List<ICarType> cars = new ArrayList<>();
-        NamingService ns = null;
-        try {
-            ns = (NamingService) LocateRegistry.getRegistry().lookup("naming Service");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        }
-        for (ICarRentalCompany iCRC : ns.getRegisteredCompanies().values()){
+        for (ICarRentalCompany iCRC : getNamingService().getRegisteredCompanies().values()){
             cars.addAll(iCRC.getAvailableCarTypes(start, end));
         }
         return cars;
@@ -105,13 +87,7 @@ public class ReservationSession implements IReservationSession{
     @Override
     public ICarType getCheapestCarType(Date start, Date end, String region) throws RemoteException {
         List<ICarType> cars = new ArrayList<>();
-        NamingService ns = null;
-        try {
-            ns = (NamingService) LocateRegistry.getRegistry().lookup("naming Service");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        }
-        for (ICarRentalCompany iCRC : ns.getRegisteredCompanies().values()){
+        for (ICarRentalCompany iCRC : getNamingService().getRegisteredCompanies().values()){
             if(iCRC.inRegion(region))
                 cars.addAll(iCRC.getAvailableCarTypes(start, end));
         }
@@ -129,5 +105,17 @@ public class ReservationSession implements IReservationSession{
     @Override
     public void cleanSession() throws RemoteException {
         _quoteList.clear();
+    }
+
+    private NamingService ns = null;
+    private NamingService getNamingService() throws RemoteException{
+        if(ns == null){
+            try {
+                ns = (NamingService) LocateRegistry.getRegistry().lookup("naming Service");
+            } catch (NotBoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return ns;
     }
 }

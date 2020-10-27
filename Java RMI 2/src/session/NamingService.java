@@ -39,7 +39,7 @@ public class NamingService implements INamingService{
 	 *@effect
 	 *	the interface is bound to its company's name in a map for ease of access.
 	 */
-	public void register(String name, ICarRentalCompany company) throws RemoteException {
+	public synchronized void register(String name, ICarRentalCompany company) throws RemoteException {
 		registeredCompanies.put(name, company);
 	}
 
@@ -50,7 +50,7 @@ public class NamingService implements INamingService{
 	 *@effect
 	 *	the company will no longer be bound in a map in this naming service
 	 */
-	public void unregister(String name) throws RemoteException {
+	public synchronized void unregister(String name) throws RemoteException {
 		registeredCompanies.remove(name);
 	}
 
@@ -59,14 +59,14 @@ public class NamingService implements INamingService{
 	}
 
 	//creates a reservationSession
-	public ReservationSession createReservationSession(String user) throws RemoteException {
+	public synchronized ReservationSession createReservationSession(String user) throws RemoteException {
 		ReservationSession session = new ReservationSession(user);
 		rentalSessions.put(user, session);
 		return session;
 	}
 
 	//creates a manager Session
-	public ManagerSession createManagerSession() throws RemoteException {
+	public synchronized ManagerSession createManagerSession() throws RemoteException {
 		ManagerSession session = new ManagerSession();
 		return session;
 	}
@@ -78,7 +78,7 @@ public class NamingService implements INamingService{
 	 *@effect
 	 *	the session will be removed from the active sessions and will no longer have any references to it
 	 */
-	public void removeRentalSession(ReservationSession session) throws RemoteException {
+	public synchronized void removeRentalSession(ReservationSession session) throws RemoteException {
 		if (rentalSessions.containsValue(session)) {
 			Set<String> keys = rentalSessions.keySet();
 			for(String key: keys) {
@@ -91,7 +91,7 @@ public class NamingService implements INamingService{
 	}
 	
 	
-	public ReservationSession getUserSession(String user) throws RemoteException {
+	public synchronized ReservationSession getUserSession(String user) throws RemoteException {
 		ReservationSession session;
 		try {
 			session = rentalSessions.get(user);
@@ -103,7 +103,6 @@ public class NamingService implements INamingService{
 	}
 
 
-	@Override
 	public ReservationConstraints createConstraints(Date start, Date end, String carType, String region)
 			throws RemoteException {
 		ReservationConstraints constraints = new ReservationConstraints(start, end, carType, region);

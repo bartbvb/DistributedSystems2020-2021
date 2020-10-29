@@ -142,6 +142,7 @@ public class ReservationSession implements IReservationSession{
     @Override
     public void cleanSession() throws RemoteException {
         _quoteList.clear();
+        _clientName = "";
     }
 
     private NamingService ns = null;

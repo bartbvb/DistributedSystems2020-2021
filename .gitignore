@@ -10,3 +10,8 @@ Java RMI 1/out/*
 */out/*
 */bin/*
 *.zip
+/Java EE 1/CarRental/nbproject/private/
+/Java EE 1/CarRental-client/nbproject/private/
+/Java EE 1/CarRental-ejb/nbproject/private/
+/Java EE 1/CarRental-lib/nbproject/private/
+*.log

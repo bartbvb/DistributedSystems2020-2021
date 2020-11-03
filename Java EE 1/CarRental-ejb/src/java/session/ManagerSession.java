@@ -22,23 +22,6 @@ import rental.*;
 @Stateless
 public class ManagerSession implements ManagerSessionRemote{
 
-    @RolesAllowed("manager")
-    @Override
-    public int getNrOfReservationsForCarType(CarType carType) {
-        int reservations = 0;
-        
-        Map<String, CarRentalCompany> rentals = RentalStore.getRentals();
-        for(CarRentalCompany company: rentals.values()){
-            List<Car> cars = company.getCars();
-            for(Car car: cars){
-                if(car.getType() == carType){
-                    reservations += car.getAllReservations().size();
-                }
-            }
-        }
-        
-        return reservations;
-    }
 
     @RolesAllowed("manager")
     public int getNrOfReservationsByClient(String user) {
@@ -49,5 +32,20 @@ public class ManagerSession implements ManagerSessionRemote{
         }
         
         return reservations;
+    }
+
+    @Override
+    public int getNrOfReservationsForCarType(String carRentalName, String carType) {
+        int reservations = 0;
+        
+        CarRentalCompany comp = RentalStore.getRental(carRentalName);
+        
+        List<Car> cars = comp.getCars();
+            for(Car car: cars){
+                if(car.getType().getName() == carType){
+                    reservations += car.getAllReservations().size();
+                }
+            }
+            return reservations;
     }
 }

@@ -14,6 +14,9 @@ public class Main extends AbstractTestAgency<ReservationSessionRemote, ManagerSe
     
     @EJB
     static ReservationSessionRemote session;
+    @EJB
+    static ManagerSessionRemote msession;
+
     /**
      * @param args the command line arguments
      */

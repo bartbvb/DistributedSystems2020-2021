@@ -18,12 +18,10 @@ import rental.*;
  *
  * @author osboxes
  */
-@DeclareRoles("manager")
 @Stateless
 public class ManagerSession implements ManagerSessionRemote{
 
 
-    @RolesAllowed("manager")
     public int getNrOfReservationsByClient(String user) {
         int reservations = 0;
         Map<String, CarRentalCompany> rentals = RentalStore.getRentals();
@@ -42,7 +40,7 @@ public class ManagerSession implements ManagerSessionRemote{
         
         List<Car> cars = comp.getCars();
             for(Car car: cars){
-                if(car.getType().getName() == carType){
+                if(car.getType().getName().equals(carType)){
                     reservations += car.getAllReservations().size();
                 }
             }

@@ -1,6 +1,8 @@
 package rental;
 
-public class Reservation extends Quote {
+import java.io.Serializable;
+
+public class Reservation extends Quote{
 
     private int carId;
     

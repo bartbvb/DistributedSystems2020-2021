@@ -21,3 +21,11 @@ Java RMI 1/out/*
 *.ant-deploy.xml
 
 
+/Java EE 1/CarRental-lib/build/
+/Java EE 1/CarRental-client/dist/
+/Java EE 1/CarRental-lib/dist/
+/Java EE 1/CarRental-client/build/
+/Java EE 1/CarRental/build/
+/Java EE 1/CarRental-ejb/build/
+/Java EE 1/CarRental-ejb/dist/
+/Java EE 1/CarRental/dist/

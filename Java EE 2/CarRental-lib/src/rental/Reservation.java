@@ -2,6 +2,8 @@ package rental;
 
 import static javax.persistence.CascadeType.REMOVE;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -12,6 +14,7 @@ public class Reservation extends Quote {
     @ManyToOne(cascade=REMOVE)
     private int carId;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
     /***************

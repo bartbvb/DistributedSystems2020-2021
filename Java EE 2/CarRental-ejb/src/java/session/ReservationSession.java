@@ -5,7 +5,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import static javax.ejb.TransactionAttributeType.REQUIRED;
 import rental.CarType;
 import rental.Quote;
 import rental.RentalStore;
@@ -16,6 +20,9 @@ import rental.ReservationException;
 @Stateful
 public class ReservationSession implements ReservationSessionRemote {
 
+    @Resource 
+    private EJBContext context;
+    
     private String renter;
     private List<Quote> quotes = new LinkedList<Quote>();
 
@@ -53,15 +60,17 @@ public class ReservationSession implements ReservationSessionRemote {
     }
 
     @Override
+    @TransactionAttribute(REQUIRED)
     public List<Reservation> confirmQuotes() throws ReservationException {
         List<Reservation> done = new LinkedList<Reservation>();
         try {
             for (Quote quote : quotes) {
                 done.add(RentalStore.getRental(quote.getRentalCompany()).confirmQuote(quote));
             }
+            quotes.clear();
+            
         } catch (Exception e) {
-            for(Reservation r:done)
-                RentalStore.getRental(r.getRentalCompany()).cancelReservation(r);
+            context.setRollbackOnly();
             throw new ReservationException(e);
         }
         return done;

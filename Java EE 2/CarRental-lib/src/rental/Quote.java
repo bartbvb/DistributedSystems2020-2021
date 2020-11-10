@@ -28,25 +28,49 @@ public class Quote implements Serializable {
     public Date getStartDate() {
         return startDate;
     }
+    
+    public void setStartDate(Date date){
+    this.startDate = date;
+    }
 
     public Date getEndDate() {
         return endDate;
+    }
+    
+    public void setEndDate(Date date){
+    this.endDate = date;
     }
 
     public String getCarRenter() {
         return carRenter;
     }
+    
+    public void setCarRenter(String renter){
+    this.carRenter = renter;
+    }
 
     public String getRentalCompany() {
         return rentalCompany;
+    }
+    
+    public void setRentalCompany(String comp){
+    this.rentalCompany = comp;
     }
 
     public double getRentalPrice() {
         return rentalPrice;
     }
     
+    public void setRentalPrice(Double price){
+    this.rentalPrice = price;
+    }
+    
     public String getCarType() {
 	return carType;
+    }
+    
+    public void setCarType(String type){
+    this.carType = type;
     }
     
     /*************

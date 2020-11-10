@@ -8,20 +8,35 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
+@Entity
 public class CarRentalCompany {
 
     private static Logger logger = Logger.getLogger(CarRentalCompany.class.getName());
+    
+    @Id
     private String name;
+    @OneToMany(cascade=REMOVE)
     private List<Car> cars;
+    @ManyToMany(cascade=PERSIST)
     private Set<CarType> carTypes = new HashSet<CarType>();
-	private List<String> regions;
+    @ElementCollection
+    private List<String> regions;
 
+   
 	
     /***************
      * CONSTRUCTOR *
      ***************/
-
+    public CarRentalCompany() {
+    }
     public CarRentalCompany(String name, List<String> regions, List<Car> cars) {
         logger.log(Level.INFO, "<{0}> Starting up CRC {0} ...", name);
         setName(name);

@@ -3,17 +3,27 @@ package rental;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.AUTO;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+@Entity
 public class Car {
 
+    @Id @GeneratedValue(strategy=AUTO)
     private int id;
+    @ManyToOne
     private CarType type;
+    @OneToMany
     private Set<Reservation> reservations;
 
     /***************
      * CONSTRUCTOR *
      ***************/
-    
+    public Car(){}
     public Car(int uid, CarType type) {
     	this.id = uid;
         this.type = type;
@@ -26,6 +36,10 @@ public class Car {
     
     public int getId() {
     	return id;
+    }
+    
+    public void setId(int id){
+        this.id = id;
     }
     
     /************
@@ -66,5 +80,9 @@ public class Car {
 
     public Set<Reservation> getReservations() {
         return reservations;
+    }
+    
+    public void setReservations(Set<Reservation> res){
+        this.reservations = res;
     }
 }

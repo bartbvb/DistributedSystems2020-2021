@@ -37,6 +37,11 @@ public class CarRentalCompany {
      ***************/
     public CarRentalCompany() {
     }
+    
+    public CarRentalCompany(String name){
+        logger.log(Level.INFO, "<{0}> Starting up CRC {0} ...", name);
+        setName(name);
+    }
     public CarRentalCompany(String name, List<String> regions, List<Car> cars) {
         logger.log(Level.INFO, "<{0}> Starting up CRC {0} ...", name);
         setName(name);
@@ -69,6 +74,10 @@ public class CarRentalCompany {
     public List<String> getRegions() {
         return this.regions;
     }
+    
+    public void addRegions(List<String> regions){
+        this.regions.addAll(regions);
+    }
 
     /*************
      * CAR TYPES *
@@ -99,6 +108,10 @@ public class CarRentalCompany {
             }
         }
         return availableCarTypes;
+    }
+    
+    public void addCarType(CarType type){
+        this.carTypes.add(type);
     }
 
     /*********
@@ -142,6 +155,10 @@ public class CarRentalCompany {
             }
         }
         return availableCars;
+    }
+    
+    public void addCar(Car car){
+        this.cars.add(car);
     }
 
     /****************

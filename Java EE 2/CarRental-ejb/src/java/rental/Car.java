@@ -3,6 +3,8 @@ package rental;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.AUTO;
@@ -15,15 +17,19 @@ public class Car {
 
     @Id @GeneratedValue(strategy=AUTO)
     private int id;
-    @ManyToOne
+    @ManyToOne(cascade=PERSIST)
     private CarType type;
-    @OneToMany
+    @OneToMany(cascade=REMOVE, mappedBy="ReservationId")
     private Set<Reservation> reservations;
 
     /***************
      * CONSTRUCTOR *
      ***************/
     public Car(){}
+    public Car(CarType type){
+        this.type = type;
+        this.reservations = new HashSet<Reservation>();
+    }
     public Car(int uid, CarType type) {
     	this.id = uid;
         this.type = type;

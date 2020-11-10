@@ -1,10 +1,13 @@
 package session;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import rental.Car;
 import rental.CarRentalCompany;
 import rental.CarType;
@@ -13,6 +16,9 @@ import rental.Reservation;
 
 @Stateless
 public class ManagerSession implements ManagerSessionRemote {
+    
+    @PersistenceContext
+    EntityManager entMan;
     
     @Override
     public Set<CarType> getCarTypes(String company) {
@@ -60,6 +66,56 @@ public class ManagerSession implements ManagerSessionRemote {
             return 0;
         }
         return out.size();
+    }
+
+    @Override
+    public void createCarRentalCompany(String name) {
+        entMan.persist(new CarRentalCompany(name));
+    }
+
+    @Override
+    public void addRegionList(String name, List<String> regions) {
+        CarRentalCompany company = entMan.find(CarRentalCompany.class,name);
+        company.addRegions(regions);
+        entMan.persist(company);
+    }
+
+    @Override
+    public void addCarTypeList(String name, List<String> types) {
+        CarRentalCompany company = entMan.find(CarRentalCompany.class,name);
+        for(String type : types){
+            company.addCarType(entMan.find(CarType.class, type));
+        }
+        entMan.persist(company);
+    }
+
+    @Override
+    public void addCarList(String name, List<String> cars) {
+        CarRentalCompany company = entMan.find(CarRentalCompany.class,name);
+        for(String car : cars){
+            Car c = entMan.createNamedQuery("ManagerSession.addCar",Car.class).setParameter("id", Long.parseLong(car)).getSingleResult();
+            company.addCar(c);
+        }
+        entMan.persist(company);
+    }
+
+    @Override
+    public String createCarType(String id, int nbSeats, float trunkSpace, double rentalPD, boolean smoke) {
+        //If one already exists, return it
+        if(entMan.find(CarType.class, id) != null){
+            return id;
+        }
+        //Else make it, persist and return
+        CarType type = new CarType(id,nbSeats,trunkSpace, rentalPD, smoke);
+        entMan.persist(type);
+        return type.getName();
+    }
+
+    @Override
+    public String createCar(String type) {
+        Car car = new Car(entMan.find(CarType.class, type));
+        entMan.persist(car);
+        return Integer.toString(car.getId());
     }
 
 }

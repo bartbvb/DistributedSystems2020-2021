@@ -17,11 +17,15 @@ public interface ManagerSessionRemote {
     
     public int getNumberOfReservations(String company, String type);
       
-    public void createCarRentalCompany(String name, List<String> regions, List<String> car);
+    public void createCarRentalCompany(String name);
     
     public void addRegionList(String name, List<String> regions);
     
     public void addCarTypeList(String name, List<String> types);
     
-    public void addCarList(String name, List<String> car);
+    public void addCarList(String name, List<String> cars);
+    
+    public String createCarType(String id, int nbSeats, float trunkSpace, double rentalPD, boolean smoke);
+    
+    public String createCar(String type);
 }

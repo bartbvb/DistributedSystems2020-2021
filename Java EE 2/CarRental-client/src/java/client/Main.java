@@ -25,7 +25,7 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
     }
 
     public static void main(String[] args) throws Exception {
-        // TODO: use updated manager interface to load cars into companies
+       
         Main main = new Main("trips");
         
         ManagerSessionRemote managerSession = main.getNewManagerSession("main");
@@ -128,26 +128,28 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
 
     @Override
     protected void getAvailableCarTypes(ReservationSessionRemote session, Date start, Date end) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for(CarType c : session.getAvailableCarTypes(start, end)){
+            System.out.println(c.toString());
+        }
     }
 
     @Override
     protected void createQuote(ReservationSessionRemote session, String name, Date start, Date end, String carType, String region) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        session.createQuote(name, new ReservationConstraints(start,end,carType,region));
     }
 
     @Override
     protected List<Reservation> confirmQuotes(ReservationSessionRemote session, String name) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return session.confirmQuotes();
     }
 
     @Override
     protected int getNumberOfReservationsBy(ManagerSessionRemote ms, String clientName) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ms.getNumberOfReservations(clientName);
     }
 
     @Override
     protected int getNumberOfReservationsByCarType(ManagerSessionRemote ms, String carRentalName, String carType) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ms.getNumberOfReservations(carRentalName, carType);
     }
 }

@@ -2,6 +2,7 @@ package session;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,6 +68,17 @@ public class ManagerSession implements ManagerSessionRemote {
         }
         return out.size();
     }
+    
+    @Override
+    public int getNumberOfReservations(String client) {
+        int reservations = 0;
+        Map<String, CarRentalCompany> rentals = RentalStore.getRentals();
+        for(CarRentalCompany company: rentals.values()){
+            reservations += company.getReservationsBy(client).size();
+        }
+        
+        return reservations;
+    }
 
     @Override
     public void createCarRentalCompany(String name) {
@@ -117,5 +129,7 @@ public class ManagerSession implements ManagerSessionRemote {
         entMan.persist(car);
         return Integer.toString(car.getId());
     }
+
+    
 
 }

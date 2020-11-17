@@ -18,6 +18,8 @@ public interface ManagerSessionRemote {
     
     public Set<CarType> getAvailableCarTypes(Date start, Date End);
     
+    public CarType getMostPopularCarType(String company, int year);
+    
     public int getNumberOfReservations(String company, String type, int carId);
     
     public int getNumberOfReservations(String company, String type);

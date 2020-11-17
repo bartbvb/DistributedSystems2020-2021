@@ -1,7 +1,10 @@
 package session;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,13 +86,14 @@ public class ManagerSession implements ManagerSessionRemote {
     
     @Override
     public int getNumberOfReservations(String client) {
-        int reservations = 0;
+        /*int reservations = 0;
         Map<String, CarRentalCompany> rentals = RentalStore.getRentals();
         for(CarRentalCompany company: rentals.values()){
             reservations += company.getReservationsBy(client).size();
-        }
-        
-        return reservations;
+        }*/
+        List results = entMan.createQuery("SELECT count(R) FROM Reservation R WHERE R.carRenter = " + client).getResultList();
+        if(results.isEmpty()) return 0;
+        return (int)results.get(0);
     }
 
     @Override
@@ -158,6 +162,36 @@ try {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }    
+    }
+
+    @Override
+    public CarType getMostPopularCarType(String company, int year) {
+        String q = "SELECT c.type FROM Car c WHERE NOT (c.reservations.startDate > :start AND c.reservations.rentalCompany = company)";
+            Query quer = entMan.createQuery("SELECT c.type FROM Car c WHERE NOT ((c.reservations.startDate > :start AND c.reservations.rentalCompany = :company) OR (c.reservations.startDate < :start AND c.reservations.rentalCompany = :company))");
+            quer.setParameter("company", company);
+            quer.setParameter("start", year);
+            List<CarType> res = quer.getResultList();
+            
+            return sortByFrequency(res).get(0);
+    }
+    
+    private List<CarType> sortByFrequency(List<CarType> inputList){
+        Map<CarType,Integer> elCountMap = new LinkedHashMap<>();
+        
+        for(CarType o : inputList){
+            int count = elCountMap.getOrDefault(o, 0);
+            elCountMap.put(o, count+1);
+        }
+        
+        List<CarType> sorted = new ArrayList<>();
+        elCountMap.entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .forEach(entry -> {
+                    for(int i = 1; i <= entry.getValue(); i++)
+                        sorted.add(entry.getKey());
+                    });
+        return sorted;
     }
 
     

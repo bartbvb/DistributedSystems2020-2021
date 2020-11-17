@@ -113,17 +113,20 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
 
     @Override
     protected CarType getMostPopularCarTypeIn(ManagerSessionRemote ms, String carRentalCompanyName, int year) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ms.getMostPopularCarType(carRentalCompanyName, year);
     }
 
     @Override
     protected ReservationSessionRemote getNewReservationSession(String name) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ReservationSessionRemote r = (ReservationSessionRemote) (new InitialContext()).lookup(ReservationSessionRemote.class.getName());
+        r.setRenterName(name);
+        return r;
     }
 
     @Override
     protected ManagerSessionRemote getNewManagerSession(String name) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ManagerSessionRemote m = (ManagerSessionRemote) (new InitialContext()).lookup(ManagerSessionRemote.class.getName());
+        return m;
     }
 
     @Override

@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,7 +22,9 @@ import rental.CarType;
 import rental.RentalStore;
 import rental.Reservation;
 
+@DeclareRoles({"manager", "user"})
 @Stateless
+@RolesAllowed("manager")
 public class ManagerSession implements ManagerSessionRemote {
     
     @PersistenceContext
@@ -197,7 +201,7 @@ public class ManagerSession implements ManagerSessionRemote {
     
     public Set<String> getBestClient() {
         try {
-            Query quer = entMan.createQuery("SELECT comp.name, res.carRenter, COUNT(res.carRenter) AS occur FROM CarRentalCompany comp, comp.cars.reservations res ORDER BY occur Desc");
+            Query quer = entMan.createQuery("SELECT comp.name, res.carRenter, COUNT(res.carRenter) AS occur FROM CarRentalCompany comp JOIN comp.cars.reservations res ORDER BY occur Desc");
             quer.setMaxResults(1);
             quer.getResultList();
             List typeList = quer.getResultList();

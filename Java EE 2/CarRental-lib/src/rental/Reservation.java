@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "reservations")
 public class Reservation extends Quote {
-    @ManyToOne(cascade=REMOVE)
+    //@ManyToOne(cascade=REMOVE)
     private int carId;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

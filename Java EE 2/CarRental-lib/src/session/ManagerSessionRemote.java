@@ -9,6 +9,8 @@ import rental.Reservation;
 @Remote
 public interface ManagerSessionRemote {
     
+    public Set<String> getAllRentalCompanies();
+    
     public Set<CarType> getCarTypes(String company);
     
     public Set<Integer> getCarIds(String company,String type);

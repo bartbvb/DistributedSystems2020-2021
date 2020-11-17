@@ -22,6 +22,12 @@ public class ManagerSession implements ManagerSessionRemote {
     EntityManager entMan;
     
     @Override
+    public Set<String> getAllRentalCompanies() {
+        List<String> companies = entMan.createQuery("SELECT CRC.name FROM CarRentalCompany CRC").getResultList();
+        return new HashSet<>(companies);
+    }
+    
+    @Override
     public Set<CarType> getCarTypes(String company) {
         try {
             return new HashSet<CarType>(RentalStore.getRental(company).getAllTypes());
@@ -33,16 +39,8 @@ public class ManagerSession implements ManagerSessionRemote {
 
     @Override
     public Set<Integer> getCarIds(String company, String type) {
-        Set<Integer> out = new HashSet<Integer>();
-        try {
-            for(Car c: RentalStore.getRental(company).getCars(type)){
-                out.add(c.getId());
-            }
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-        return out;
+        List<Integer> carIds = entMan.createQuery("SELECT C.id FROM CarRentalCompany as CRC JOIN CRC.Cars C JOIN CRC.carTypes CT WHERE CRC.name = " + company + " AND CT.name = " + type).getResultList();
+        return new HashSet<>(carIds);
     }
 
     @Override
@@ -66,7 +64,9 @@ public class ManagerSession implements ManagerSessionRemote {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
-        return out.size();
+        List results = entMan.createQuery("").getResultList();
+        if(results.isEmpty()) return 0;
+        return (int)results.get(0);
     }
     
     @Override
@@ -129,6 +129,8 @@ public class ManagerSession implements ManagerSessionRemote {
         entMan.persist(car);
         return Integer.toString(car.getId());
     }
+
+    
 
     
 

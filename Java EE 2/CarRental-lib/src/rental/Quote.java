@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import static javax.persistence.TemporalType.DATE;
 
 @MappedSuperclass
 public class Quote implements Serializable {
 
+    @Temporal(DATE)
     private Date startDate;
+    @Temporal(DATE)
     private Date endDate;
     private String carRenter;
     private String rentalCompany;

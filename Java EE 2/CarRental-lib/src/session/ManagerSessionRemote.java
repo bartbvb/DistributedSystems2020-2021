@@ -1,5 +1,6 @@
 package session;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Remote;
@@ -12,6 +13,8 @@ public interface ManagerSessionRemote {
     public Set<CarType> getCarTypes(String company);
     
     public Set<Integer> getCarIds(String company,String type);
+    
+    public Set<CarType> getAvailableCarTypes(Date start, Date End);
     
     public int getNumberOfReservations(String company, String type, int carId);
     

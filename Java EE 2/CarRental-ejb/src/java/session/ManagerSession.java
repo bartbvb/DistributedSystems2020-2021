@@ -1,5 +1,6 @@
 package session;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import rental.Car;
 import rental.CarRentalCompany;
 import rental.CarType;
@@ -24,7 +26,11 @@ public class ManagerSession implements ManagerSessionRemote {
     @Override
     public Set<CarType> getCarTypes(String company) {
         try {
-            return new HashSet<CarType>(RentalStore.getRental(company).getAllTypes());
+            //return new HashSet<CarType>(RentalStore.getRental(company).getAllTypes());
+            String querry = "SELECT c.carTypes FROM CarRentalCompany c WHERE c.name LIKE :compName";
+            List<CarType> typeList = entMan.createQuery(querry).setParameter("compName", company).getResultList();
+            Set<CarType> res = new HashSet<CarType>(typeList);
+            return res;
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -37,6 +43,7 @@ public class ManagerSession implements ManagerSessionRemote {
         try {
             for(Car c: RentalStore.getRental(company).getCars(type)){
                 out.add(c.getId());
+            
             }
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
@@ -48,7 +55,13 @@ public class ManagerSession implements ManagerSessionRemote {
     @Override
     public int getNumberOfReservations(String company, String type, int id) {
         try {
-            return RentalStore.getRental(company).getCar(id).getReservations().size();
+            //return RentalStore.getRental(company).getCar(id).getReservations().size();
+            String q = "SELECT COUNT(c.carTypes.name) FROM CarRentalCompany c WHERE c.name LIKE :compName AND c.carTypes.name LIKE :type";
+            Query quer = entMan.createQuery(q);
+            quer.setParameter("compName", company);
+            quer.setParameter("type", type);
+            return quer.getFirstResult();
+            
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
@@ -128,6 +141,23 @@ public class ManagerSession implements ManagerSessionRemote {
         Car car = new Car(entMan.find(CarType.class, type));
         entMan.persist(car);
         return Integer.toString(car.getId());
+    }
+
+    @Override
+    public Set<CarType> getAvailableCarTypes(Date start, Date End) {
+try {
+            String q = "SELECT c.type FROM Car c WHERE NOT ((c.reservations.startDate > :start AND c.reservations.startDate < :end) OR (c.reservations.endDate > :start AND c.reservations.endDate < :end))";
+            Query quer = entMan.createQuery(q);
+            quer.setParameter("start", start);
+            quer.setParameter("end", End);
+            List<CarType> typeList = quer.getResultList();
+            Set<CarType> res = new HashSet<CarType>(typeList);
+            return res;
+
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }    
     }
 
     

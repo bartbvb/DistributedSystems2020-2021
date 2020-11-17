@@ -2,7 +2,10 @@ package rental;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 
+@MappedSuperclass
 public class Quote implements Serializable {
 
     private Date startDate;

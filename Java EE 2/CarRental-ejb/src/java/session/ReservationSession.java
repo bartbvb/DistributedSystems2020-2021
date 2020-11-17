@@ -10,6 +10,9 @@ import javax.ejb.EJBContext;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import static javax.ejb.TransactionAttributeType.REQUIRED;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import rental.CarType;
 import rental.Quote;
 import rental.RentalStore;
@@ -25,6 +28,9 @@ public class ReservationSession implements ReservationSessionRemote {
     
     private String renter;
     private List<Quote> quotes = new LinkedList<Quote>();
+    
+    @PersistenceContext
+    EntityManager entMan;
 
     @Override
     public Set<String> getAllRentalCompanies() {
@@ -87,5 +93,18 @@ public class ReservationSession implements ReservationSessionRemote {
     @Override
     public String getRenterName() {
         return renter;
+    }
+    
+    @Override
+    public String getCheapestCar(Date start, Date end, String region) {
+        Query quer = entMan.createQuery("SELECT c.id, t.rentalPricePerDay AS price FROM CarRentalCompany comp JOIN comp.cars c JOIN c.type t WHERE NOT ((c.reservations.startDate > :start AND c.reservations.startDate < :end) OR (c.reservations.endDate > :start AND c.reservations.endDate < :end)) AND comp.regions LIKE :reg ORDER BY price DESC");
+        quer.setParameter("start", start);
+        quer.setParameter("end", end);
+        quer.setParameter("reg", region);
+        quer.setMaxResults(1);
+        quer.getResultList();
+        List list = quer.getResultList();
+        String res = list.toString();
+        return res;
     }
 }

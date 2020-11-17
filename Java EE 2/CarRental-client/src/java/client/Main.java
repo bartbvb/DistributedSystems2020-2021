@@ -103,12 +103,14 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
 
     @Override
     protected Set<String> getBestClients(ManagerSessionRemote ms) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Set<String> set = ms.getBestClient();
+        System.out.println(set.toString());
+        return set;
     }
 
     @Override
     protected String getCheapestCarType(ReservationSessionRemote session, Date start, Date end, String region) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return session.getCheapestCar(start, end, region);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class Car {
     private int id;
     @ManyToOne(cascade=PERSIST)
     private CarType type;
-    @OneToMany(cascade=REMOVE, mappedBy="ReservationId")
+    @OneToMany(cascade=REMOVE)
     private Set<Reservation> reservations;
 
     /***************

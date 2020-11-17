@@ -56,10 +56,10 @@ public class ManagerSession implements ManagerSessionRemote {
     public int getNumberOfReservations(String company, String type, int id) {
         try {
             //return RentalStore.getRental(company).getCar(id).getReservations().size();
-            String q = "SELECT COUNT(c.carTypes.name) FROM CarRentalCompany c WHERE c.name LIKE :compName AND c.carTypes.name LIKE :type";
-            Query quer = entMan.createQuery(q);
+            Query quer = entMan.createQuery("SELECT COUNT(res) FROM Reservation res WHERE res.rentalCompany LIKE :compName AND res.carType LIKE :type AND res.carId LIKE :id");
             quer.setParameter("compName", company);
             quer.setParameter("type", type);
+            quer.setParameter("id", id);
             return quer.getFirstResult();
             
         } catch (IllegalArgumentException ex) {
@@ -149,7 +149,7 @@ public class ManagerSession implements ManagerSessionRemote {
 
     @Override
     public Set<CarType> getAvailableCarTypes(Date start, Date End) {
-try {
+        try {
             String q = "SELECT c.type FROM Car c WHERE NOT ((c.reservations.startDate > :start AND c.reservations.startDate < :end) OR (c.reservations.endDate > :start AND c.reservations.endDate < :end))";
             Query quer = entMan.createQuery(q);
             quer.setParameter("start", start);
@@ -195,7 +195,22 @@ try {
     }
 
     
+    public Set<String> getBestClient() {
+        try {
+            Query quer = entMan.createQuery("SELECT comp.name, res.carRenter, COUNT(res.carRenter) AS occur FROM CarRentalCompany comp, comp.cars.reservations res ORDER BY occur Desc");
+            quer.setMaxResults(1);
+            quer.getResultList();
+            List typeList = quer.getResultList();
+            Set<String> res = new HashSet<>(typeList);
+            return res;
+
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }    
+    }
 
     
+
 
 }

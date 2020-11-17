@@ -37,4 +37,7 @@ public interface ManagerSessionRemote {
     public String createCarType(String id, int nbSeats, float trunkSpace, double rentalPD, boolean smoke);
     
     public String createCar(String type);
+    
+    public Set<String> getBestClient();
+    
 }

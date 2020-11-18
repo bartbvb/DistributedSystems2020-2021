@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateful;
@@ -13,9 +15,9 @@ import static javax.ejb.TransactionAttributeType.REQUIRED;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import rental.CarRentalCompany;
 import rental.CarType;
 import rental.Quote;
-import rental.RentalStore;
 import rental.Reservation;
 import rental.ReservationConstraints;
 import rental.ReservationException;
@@ -34,30 +36,51 @@ public class ReservationSession implements ReservationSessionRemote {
 
     @Override
     public Set<String> getAllRentalCompanies() {
-        return new HashSet<String>(RentalStore.getRentals().keySet());
+        Query quer = entMan.createQuery("SELECT CRC.name FROM CarRentalCompany CRC");
+        return new HashSet<String>(quer.getResultList());
     }
     
     @Override
-    public List<CarType> getAvailableCarTypes(Date start, Date end) {
-        List<CarType> availableCarTypes = new LinkedList<CarType>();
-        for(String crc : getAllRentalCompanies()) {
-            for(CarType ct : RentalStore.getRentals().get(crc).getAvailableCarTypes(start, end)) {
-                if(!availableCarTypes.contains(ct))
-                    availableCarTypes.add(ct);
-            }
-        }
-        return availableCarTypes;
+    public List<CarType> getAvailableCarTypes(Date start, Date End) {
+        try {
+            String q = "SELECT c.type FROM Car c WHERE NOT ((c.reservations.startDate > :start AND c.reservations.startDate < :end) OR (c.reservations.endDate > :start AND c.reservations.endDate < :end))";
+            Query quer = entMan.createQuery(q);
+            quer.setParameter("start", start);
+            quer.setParameter("end", End);
+            return quer.getResultList();
+
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(ReservationSession.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }    
     }
 
     @Override
-    public Quote createQuote(String company, ReservationConstraints constraints) throws ReservationException {
+    public Quote createQuote(String client, ReservationConstraints constraints) throws ReservationException {
         try {
-            Quote out = RentalStore.getRental(company).createQuote(constraints, renter);
-            quotes.add(out);
-            return out;
-        } catch(Exception e) {
-            throw new ReservationException(e);
+            String q = "SELECT crc FROM CarRentalCompany crc JOIN crc.carTypes ct WHERE ct.name = :carType AND :region MEMBER OF crc.regions";
+            Query quer = entMan.createQuery(q,CarRentalCompany.class);
+            quer.setParameter("region", constraints.getRegion());
+            quer.setParameter("carType", constraints.getCarType());
+            List<CarRentalCompany> companyList = quer.getResultList();
+            if(companyList.isEmpty()) throw new ReservationException("Region is empty.");
+            return selectQuote(client, companyList, constraints);
+        } catch(ReservationException e) {
+            Logger.getLogger(ReservationSession.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
+    }
+    
+    private Quote selectQuote(String client, List<CarRentalCompany> companyList, ReservationConstraints constraints) throws ReservationException{
+        Quote res = null;
+        for(CarRentalCompany crc : companyList){
+            try{
+                res = crc.createQuote(constraints, client);
+                quotes.add(res);
+            } catch(ReservationException e){}
+        }
+        if(res == null) throw new ReservationException("Quote not possible.");
+        return res;
     }
 
     @Override
@@ -71,7 +94,12 @@ public class ReservationSession implements ReservationSessionRemote {
         List<Reservation> done = new LinkedList<Reservation>();
         try {
             for (Quote quote : quotes) {
-                done.add(RentalStore.getRental(quote.getRentalCompany()).confirmQuote(quote));
+                CarRentalCompany crc = entMan.find(CarRentalCompany.class, quote.getRentalCompany());
+                if(crc != null){
+                    Reservation res = crc.confirmQuote(quote);
+                    entMan.persist(res);
+                    done.add(res);
+                }
             }
             quotes.clear();
             

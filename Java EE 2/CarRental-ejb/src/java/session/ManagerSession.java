@@ -19,12 +19,11 @@ import javax.persistence.Query;
 import rental.Car;
 import rental.CarRentalCompany;
 import rental.CarType;
-import rental.RentalStore;
 import rental.Reservation;
 
-@DeclareRoles({"manager", "user"})
+//@DeclareRoles({"manager", "user"})
 @Stateless
-@RolesAllowed("manager")
+//@RolesAllowed("manager")
 public class ManagerSession implements ManagerSessionRemote {
     
     @PersistenceContext
@@ -125,8 +124,9 @@ public class ManagerSession implements ManagerSessionRemote {
     public void addCarList(String name, List<String> cars) {
         CarRentalCompany company = entMan.find(CarRentalCompany.class,name);
         for(String car : cars){
-            //Car c = entMan.createQuery("ManagerSession.addCar",Car.class).setParameter("id", Long.parseLong(car)).getSingleResult();
-            Car c = entMan.createQuery("SELECT C FROM Car C WHERE C.id = " + Long.parseLong(car),Car.class).getSingleResult();
+            Query quer = entMan.createQuery("SELECT C FROM Car C WHERE C.id = :id",Car.class);
+            quer.setParameter("id",Long.parseLong(car));
+            Car c = (Car) quer.getSingleResult();
             company.addCar(c);
         }
         entMan.persist(company);
@@ -147,25 +147,9 @@ public class ManagerSession implements ManagerSessionRemote {
     @Override
     public String createCar(String type) {
         Car car = new Car(entMan.find(CarType.class, type));
-        entMan.persist(car);
+        System.out.println(car);
+        entMan.persist(car); //TODO: SQLIntegrityConstraintViolationException: The statement was aborted because it would have caused a duplicate key value in a unique or primary key constraint or unique index identified by 'SQL201117130156220' defined on 'CAR'.
         return Integer.toString(car.getId());
-    }
-
-    @Override
-    public Set<CarType> getAvailableCarTypes(Date start, Date End) {
-        try {
-            String q = "SELECT c.type FROM Car c WHERE NOT ((c.reservations.startDate > :start AND c.reservations.startDate < :end) OR (c.reservations.endDate > :start AND c.reservations.endDate < :end))";
-            Query quer = entMan.createQuery(q);
-            quer.setParameter("start", start);
-            quer.setParameter("end", End);
-            List<CarType> typeList = quer.getResultList();
-            Set<CarType> res = new HashSet<CarType>(typeList);
-            return res;
-
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }    
     }
 
     @Override

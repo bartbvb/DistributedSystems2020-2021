@@ -30,9 +30,14 @@ public class ManagerSession implements ManagerSessionRemote {
     EntityManager entMan;
     
     @Override
-    public Set<String> getAllRentalCompanies() {
-        List<String> companies = entMan.createQuery("SELECT CRC.name FROM CarRentalCompany CRC").getResultList();
-        return new HashSet<>(companies);
+    public Set<String> getAllRentalCompanies() {     
+        try {
+            Query quer = entMan.createQuery("SELECT CRC.name FROM CarRentalCompany CRC");
+            return new HashSet<>(quer.getResultList());
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
+            return new HashSet<>();
+        }
     }
     
     @Override
@@ -51,8 +56,15 @@ public class ManagerSession implements ManagerSessionRemote {
 
     @Override
     public Set<Integer> getCarIds(String company, String type) {
-        List<Integer> carIds = entMan.createQuery("SELECT C.id FROM CarRentalCompany as CRC JOIN CRC.Cars C JOIN CRC.carTypes CT WHERE CRC.name = " + company + " AND CT.name = " + type).getResultList();
-        return new HashSet<>(carIds);
+        try{
+            Query quer = entMan.createQuery("SELECT C.id FROM CarRentalCompany as CRC JOIN CRC.Cars C JOIN CRC.carTypes CT WHERE CRC.name = :company AND CT.name = :type");
+            quer.setParameter("company", company);
+            quer.setParameter("type", type);
+            return new HashSet<>(quer.getResultList());
+        }catch (IllegalArgumentException ex) {
+            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
+            return new HashSet<>();
+        }
     }
 
     @Override
@@ -82,9 +94,15 @@ public class ManagerSession implements ManagerSessionRemote {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }*/
-        List results = entMan.createQuery("SELECT count(R) FROM Reservation R WHERE R.rentalCompany = " + company + " AND R.carType = " + type).getResultList();
-        if(results.isEmpty()) return 0;
-        return (int)results.get(0);
+        try{
+            Query quer = entMan.createQuery("SELECT count(R) FROM Reservation R WHERE R.rentalCompany = :company AND R.carType = :type");
+            quer.setParameter("company", company);
+            quer.setParameter("type", type);
+            return (int)quer.getFirstResult();
+        }catch (IllegalArgumentException ex) {
+            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
     
     @Override
@@ -94,9 +112,14 @@ public class ManagerSession implements ManagerSessionRemote {
         for(CarRentalCompany company: rentals.values()){
             reservations += company.getReservationsBy(client).size();
         }*/
-        List results = entMan.createQuery("SELECT count(R) FROM Reservation R WHERE R.carRenter = " + client).getResultList();
-        if(results.isEmpty()) return 0;
-        return (int)results.get(0);
+        try{
+            Query quer = entMan.createQuery("SELECT count(R) FROM Reservation R WHERE R.carRenter = :client");
+            quer.setParameter("client", client);
+            return (int)quer.getFirstResult();
+        }catch (IllegalArgumentException ex) {
+            Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 
     @Override
@@ -154,16 +177,17 @@ public class ManagerSession implements ManagerSessionRemote {
 
     @Override
     public CarType getMostPopularCarType(String company, int year) {
-        String q = "SELECT c.type FROM Car c WHERE NOT (c.reservations.startDate > :start AND c.reservations.rentalCompany = company)";
-            Query quer = entMan.createQuery("SELECT c.type FROM Car c WHERE NOT ((c.reservations.startDate > :start AND c.reservations.rentalCompany = :company) OR (c.reservations.startDate < :start AND c.reservations.rentalCompany = :company))");
+            //Query quer = entMan.createQuery("SELECT c.type FROM Car c WHERE c.reservations.rentalCompany = :company AND NOT (c.reservations.startDate > :start OR c.reservations.startDate < :start)");
+            Query quer = entMan.createQuery("SELECT res.carType, COUNT(res.carType) AS occur FROM CarRentalCompany comp JOIN comp.cars.reservations res WHERE comp.name = :company AND EXTRACT(YEAR FROM res.startDate) = :start ORDER BY occur Desc");
             quer.setParameter("company", company);
             quer.setParameter("start", year);
+            quer.setMaxResults(1);
             List<CarType> res = quer.getResultList();
             
-            return sortByFrequency(res).get(0);
+            return res.get(0);
     }
     
-    private List<CarType> sortByFrequency(List<CarType> inputList){
+    /*private List<CarType> sortByFrequency(List<CarType> inputList){
         Map<CarType,Integer> elCountMap = new LinkedHashMap<>();
         
         for(CarType o : inputList){
@@ -180,7 +204,7 @@ public class ManagerSession implements ManagerSessionRemote {
                         sorted.add(entry.getKey());
                     });
         return sorted;
-    }
+    }*/
 
     
     public Set<String> getBestClient() {

@@ -178,7 +178,7 @@ public class ManagerSession implements ManagerSessionRemote {
     @Override
     public CarType getMostPopularCarType(String company, int year) {
             //Query quer = entMan.createQuery("SELECT c.type FROM Car c WHERE c.reservations.rentalCompany = :company AND NOT (c.reservations.startDate > :start OR c.reservations.startDate < :start)");
-            Query quer = entMan.createQuery("SELECT res.carType, COUNT(res.carType) AS occur FROM CarRentalCompany comp JOIN comp.cars.reservations res WHERE comp.name = :company AND EXTRACT(YEAR FROM res.startDate) = :start ORDER BY occur Desc");
+            Query quer = entMan.createQuery("SELECT res.carType, COUNT(res.carType) AS occur FROM CarRentalCompany comp JOIN comp.cars ca JOIN ca.reservations res WHERE comp.name = :company AND EXTRACT(YEAR FROM res.startDate) = :start ORDER BY occur Desc");
             quer.setParameter("company", company);
             quer.setParameter("start", year);
             quer.setMaxResults(1);

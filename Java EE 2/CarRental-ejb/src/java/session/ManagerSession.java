@@ -21,9 +21,9 @@ import rental.CarRentalCompany;
 import rental.CarType;
 import rental.Reservation;
 
-//@DeclareRoles({"manager", "user"})
+@DeclareRoles({"manager", "user"})
 @Stateless
-//@RolesAllowed("manager")
+@RolesAllowed("manager")
 public class ManagerSession implements ManagerSessionRemote {
     
     @PersistenceContext
@@ -211,9 +211,16 @@ public class ManagerSession implements ManagerSessionRemote {
     
     public Set<String> getBestClient() {
         try {
-            Query quer = entMan.createQuery("SELECT res.carRenter FROM Reservations res GROUP BY res.carRenter ORDER BY COUNT(res.carRenter) DESC");
-            List typeList = quer.getResultList();
-            Set<String> res = new HashSet<>(typeList);
+            Query quer = entMan.createQuery("SELECT res.carRenter, COUNT(res.carRenter) as occur FROM Reservation res GROUP BY res.carRenter ORDER BY occur DESC");
+            List<Object[]> typeList = quer.getResultList();
+            Long max = (Long)typeList.get(0)[1];
+            Set<String> res = new HashSet<>();
+            for(Object[] tuple : typeList){
+                Long c = (Long)tuple[1];
+                if(c.equals(max))res.add((String)tuple[0]);
+            }
+            
+            System.out.println(res);
             return res;
 
         } catch (IllegalArgumentException ex) {

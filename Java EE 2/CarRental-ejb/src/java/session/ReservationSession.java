@@ -1,5 +1,6 @@
 package session;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -51,7 +52,7 @@ public class ReservationSession implements ReservationSessionRemote {
 
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ReservationSession.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return new ArrayList<CarType>();
         }    
     }
 

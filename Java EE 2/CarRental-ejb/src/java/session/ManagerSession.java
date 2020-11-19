@@ -209,9 +209,7 @@ public class ManagerSession implements ManagerSessionRemote {
     
     public Set<String> getBestClient() {
         try {
-            Query quer = entMan.createQuery("SELECT comp.name, res.carRenter, COUNT(res.carRenter) AS occur FROM CarRentalCompany comp JOIN comp.cars.reservations res ORDER BY occur Desc");
-            quer.setMaxResults(1);
-            quer.getResultList();
+            Query quer = entMan.createQuery("SELECT res.carRenter FROM Reservations res GROUP BY res.carRenter ORDER BY COUNT(res.carRenter) DESC");
             List typeList = quer.getResultList();
             Set<String> res = new HashSet<>(typeList);
             return res;

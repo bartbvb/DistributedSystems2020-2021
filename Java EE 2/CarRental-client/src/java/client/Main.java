@@ -146,6 +146,7 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
     @Override
     protected void getAvailableCarTypes(ReservationSessionRemote session, Date start, Date end) throws Exception {
         //if(session.getAvailableCarTypes(start, end) == null) System.out.println("availablecartypes failed");
+        System.out.println("client.Main.getAvailableCarTypes");
         for(CarType c : session.getAvailableCarTypes(start, end)){
             System.out.println(c.toString());
         }
@@ -163,11 +164,13 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
 
     @Override
     protected int getNumberOfReservationsBy(ManagerSessionRemote ms, String clientName) throws Exception {
+        System.out.println("client.Main.getNumberOfReservationsBy("+ clientName + ")");
         return ms.getNumberOfReservations(clientName);
     }
 
     @Override
     protected int getNumberOfReservationsByCarType(ManagerSessionRemote ms, String carRentalName, String carType) throws Exception {
+        System.out.println("client.Main.getNumberOfReservationsByCarType(" + carRentalName + ", " + carType + ")");
         return ms.getNumberOfReservations(carRentalName, carType);
     }
 }

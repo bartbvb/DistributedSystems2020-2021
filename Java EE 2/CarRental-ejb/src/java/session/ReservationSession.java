@@ -126,7 +126,7 @@ public class ReservationSession implements ReservationSessionRemote {
     
     @Override
     public String getCheapestCar(Date start, Date end, String region) {
-        Query quer = entMan.createQuery("SELECT c.id, t.rentalPricePerDay AS price FROM CarRentalCompany comp JOIN comp.cars c JOIN c.type t JOIN c.reservations res WHERE NOT ((res.startDate > :start AND res.startDate < :end) OR (res.endDate > :start AND res.endDate < :end)) AND comp.regions LIKE :reg ORDER BY price DESC");
+        Query quer = entMan.createQuery("SELECT c.id, t.rentalPricePerDay AS price FROM CarRentalCompany comp JOIN comp.cars c JOIN c.type t JOIN c.reservations res WHERE NOT ((res.startDate > :start AND res.startDate < :end) OR (res.endDate > :start AND res.endDate < :end)) AND :reg MEMBER OF comp.regions ORDER BY price ASC");
         quer.setParameter("start", start);
         quer.setParameter("end", end);
         quer.setParameter("reg", region);

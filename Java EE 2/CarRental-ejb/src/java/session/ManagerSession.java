@@ -178,13 +178,13 @@ public class ManagerSession implements ManagerSessionRemote {
     @Override
     public CarType getMostPopularCarType(String company, int year) {
             //Query quer = entMan.createQuery("SELECT c.type FROM Car c WHERE c.reservations.rentalCompany = :company AND NOT (c.reservations.startDate > :start OR c.reservations.startDate < :start)");
-            Query quer = entMan.createQuery("SELECT res.carType, COUNT(res.carType) AS occur FROM CarRentalCompany comp JOIN comp.cars.reservations res WHERE comp.name = :company AND EXTRACT(YEAR FROM res.startDate) = :start ORDER BY occur Desc");
+            Query quer = entMan.createQuery("SELECT res.carType FROM CarRentalCompany comp JOIN comp.cars c JOIN c.reservations res WHERE comp.name = :company AND EXTRACT(YEAR FROM res.startDate) = :start GROUP BY res.carType ORDER BY COUNT(res.id) DESC");
             quer.setParameter("company", company);
             quer.setParameter("start", year);
             quer.setMaxResults(1);
-            List<CarType> res = quer.getResultList();
+            CarType res = entMan.find(CarType.class,(String)quer.getResultList().get(0));
             
-            return res.get(0);
+            return res;
     }
     
     /*private List<CarType> sortByFrequency(List<CarType> inputList){
@@ -218,7 +218,7 @@ public class ManagerSession implements ManagerSessionRemote {
 
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return new HashSet<String>();
         }    
     }
 

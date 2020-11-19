@@ -98,7 +98,8 @@ public class ManagerSession implements ManagerSessionRemote {
             Query quer = entMan.createQuery("SELECT count(R) FROM Reservation R WHERE R.rentalCompany = :company AND R.carType = :type");
             quer.setParameter("company", company);
             quer.setParameter("type", type);
-            return (int)quer.getFirstResult();
+            Long res = (Long) quer.getSingleResult();
+            return res.intValue();
         }catch (IllegalArgumentException ex) {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
@@ -113,9 +114,10 @@ public class ManagerSession implements ManagerSessionRemote {
             reservations += company.getReservationsBy(client).size();
         }*/
         try{
-            Query quer = entMan.createQuery("SELECT count(R) FROM Reservation R WHERE R.carRenter = :client");
+            Query quer = entMan.createQuery("SELECT COUNT(R.carRenter) FROM Reservation R WHERE R.carRenter LIKE :client");
             quer.setParameter("client", client);
-            return (int)quer.getFirstResult();
+            Long res = (Long) quer.getSingleResult();
+            return res.intValue();
         }catch (IllegalArgumentException ex) {
             Logger.getLogger(ManagerSession.class.getName()).log(Level.SEVERE, null, ex);
             return 0;

@@ -1,10 +1,15 @@
 package rental;
 
+import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Temporal;
+import static javax.persistence.TemporalType.DATE;
 
-public class ReservationConstraints {
+public class ReservationConstraints implements Serializable {
     
+    @Temporal(DATE)
     private Date startDate;
+    @Temporal(DATE)
     private Date endDate;
     private String carType;
     private String region;

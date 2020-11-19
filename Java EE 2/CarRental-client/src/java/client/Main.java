@@ -25,29 +25,29 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Create new Main");
+        //System.out.println("Create new Main");
         Main main = new Main("trips");
         
-        System.out.println("Create managersession");
+        //System.out.println("Create managersession");
         ManagerSessionRemote managerSession = main.getNewManagerSession("main");
-        System.out.println("Load rentals");
+        //System.out.println("Load rentals");
         main.loadRental("dockx.csv",managerSession);
         main.loadRental("hertz.csv",managerSession);
-        System.out.println("Run");
+        //System.out.println("Run");
         main.run();
     }
     
     public static void loadRental(String datafile, ManagerSessionRemote managersession) {
         try {
-            System.out.println("Load data");
+            //System.out.println("Load data");
             CrcData data = loadData(datafile, managersession);
-            System.out.println("Create company");
+            //System.out.println("Create company");
             managersession.createCarRentalCompany(data.name);
-            System.out.println("Adding regions");
+            //System.out.println("Adding regions");
             managersession.addRegionList(data.name, data.regions);
-            System.out.println("Adding carTypes");
+            //System.out.println("Adding carTypes");
             managersession.addCarTypeList(data.name, data.carTypes);
-            System.out.println("Adding carIds");
+            //System.out.println("Adding carIds");
             managersession.addCarList(data.name, data.carIds);
            
             Logger.getLogger(Main.class.getName()).log(Level.INFO, "Loaded {0} from file {1}", new Object[]{data.name, datafile});
@@ -78,9 +78,9 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
                 } else if (line.startsWith("-")) {
                     csvReader = new StringTokenizer(line.substring(1), ",");
                     out.name = csvReader.nextToken();
-                    System.out.println("    Company name: " + out.name);
+                    //System.out.println("    Company name: " + out.name);
                     out.regions = Arrays.asList(csvReader.nextToken().split(":"));
-                    System.out.println("    Regions active: " + out.regions.size());
+                    //System.out.println("    Regions active: " + out.regions.size());
                 } else {
                     csvReader = new StringTokenizer(line, ",");
                     //create new car type from first 5 fields
@@ -90,12 +90,12 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
                             Double.parseDouble(csvReader.nextToken()),
                             Boolean.parseBoolean(csvReader.nextToken()));
                     out.carTypes.add(type);
-                    System.out.println("    Car type added: " + type);
+                    //System.out.println("    Car type added: " + type);
                     //create N new cars with given type, where N is the 5th field
                     for (int i = Integer.parseInt(csvReader.nextToken()); i > 0; i--) {
                         String c = managersession.createCar(type);
                         out.carIds.add(c);
-                        System.out.println("    Car added: " + c);
+                        //System.out.println("    Car added: " + c);
                     }        
                 }
             } 
@@ -145,6 +145,7 @@ public class Main extends AbstractTestManagement<ReservationSessionRemote, Manag
 
     @Override
     protected void getAvailableCarTypes(ReservationSessionRemote session, Date start, Date end) throws Exception {
+        //if(session.getAvailableCarTypes(start, end) == null) System.out.println("availablecartypes failed");
         for(CarType c : session.getAvailableCarTypes(start, end)){
             System.out.println(c.toString());
         }

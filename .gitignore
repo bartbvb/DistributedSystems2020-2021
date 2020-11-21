@@ -36,3 +36,5 @@ Java RMI 1/out/*
 /Java EE 2/CarRental-ejb/build/
 /Java EE 2/CarRental-ejb/dist/
 /Java EE 2/CarRental/dist/
+
+/GAE 1/target/

@@ -30,6 +30,16 @@ public class Reservation extends Quote {
         this.carId = carId;
         datastore = DatastoreOptions.getDefaultInstance().getService();
     }
+    
+    public Reservation(Entity entity) {
+        this(entity.getString("renter"), 
+        		deserializeDate(entity.getString("startDate")), 
+				deserializeDate(entity.getString("endDate")), 
+				entity.getString("rentalCompany"), 
+				entity.getString("carType"), 
+				entity.getDouble("rentalPrice"));
+        this.carId = Math.toIntExact(entity.getLong("carId"));
+    }
 
     private Reservation(
             String renter,
@@ -52,7 +62,7 @@ public class Reservation extends Quote {
 
     public Key getKey(){
         if(key != null) return key;
-        KeyFactory keyFactory = datastore.newKeyFactory().setKind("Reservation");
+        KeyFactory keyFactory = datastore.newKeyFactory().addAncestor(PathElement.of("car", carId)).setKind("Reservation");
         key = datastore.allocateId(keyFactory.newKey());
         return key;
     }

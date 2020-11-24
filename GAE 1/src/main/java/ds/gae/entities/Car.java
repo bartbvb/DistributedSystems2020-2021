@@ -7,20 +7,22 @@ import java.util.Set;
 import java.util.List;
 
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EmbeddedEntity;
+
 import com.google.appengine.repackaged.com.google.datastore.v1.client.DatastoreOptions;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
 public class Car {
 
     private int id;
     private CarType carType;
     private Set<Reservation> reservations;
+    private Datastore datastore;
 
     /***************
      * CONSTRUCTOR *
@@ -30,6 +32,11 @@ public class Car {
         this.id = uid;
         this.carType = carType;
         this.reservations = new HashSet<Reservation>();
+    	datastore = com.google.cloud.datastore.DatastoreOptions.getDefaultInstance().getService();
+    }
+    
+    public Car(Entity entity) {
+    	this.load(entity);
     }
 
     /******
@@ -78,10 +85,8 @@ public class Car {
         reservations.remove(reservation);
     }
     
-    public Entity getGaeEntity(){
-    	Datastore store = com.google.cloud.datastore.DatastoreOptions.getDefaultInstance().getService();
-    	
-    	Key carkey = store.newKeyFactory().setKind("car").newKey(id);
+    public Entity getGaeEntity(){    	
+    	Key carkey = datastore.newKeyFactory().setKind("Car").newKey(id);
     			Entity car = Entity.newBuilder(carkey)
     			.set("carType", this.carType.getName())
     			.build();
@@ -89,9 +94,27 @@ public class Car {
     }
     
     public void saveCar() {
-    	Datastore store = com.google.cloud.datastore.DatastoreOptions.getDefaultInstance().getService();
-    	store.put(getGaeEntity());
+    	datastore.put(getGaeEntity());
     }
     
-    //TODO add a load function and add the set to the gaeEntity
+    public void load(Entity entity){
+    	this.id = Math.toIntExact(entity.getKey().getId());
+    	Key carTypeKey = datastore.newKeyFactory().setKind("carType").newKey(entity.getString("carType"));
+    	this.carType = new CarType(datastore.get(carTypeKey));
+    	Query<Entity> query = Query.newEntityQueryBuilder()
+    			.setKind("Reservation")
+    			.setFilter(PropertyFilter.hasAncestor(entity.getKey()))
+    			.build();
+    	QueryResults<Entity> results = datastore.run(query);
+    	
+    	Set<Reservation> reservations = new HashSet<>();
+    	
+    	while(results.hasNext()) {
+    		Reservation reservation = new Reservation(results.next());
+    		reservations.add(reservation);
+    	}
+    	
+    	this.reservations = reservations;
+	}
+    
 }

@@ -34,6 +34,10 @@ public class CarType {
         datastore = DatastoreOptions.getDefaultInstance().getService();
         createEntity();
     }
+    
+    public CarType(Entity entity) {
+    	this.load(entity);
+    }
 
     public Key getKey(){
         if(key != null) return key;

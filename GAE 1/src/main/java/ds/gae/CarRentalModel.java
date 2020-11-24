@@ -19,9 +19,6 @@ import ds.gae.entities.ReservationConstraints;
 
 public class CarRentalModel {
 
-    // FIXME use persistence instead
-    public Map<String, CarRentalCompany> CRCS = new HashMap<>();
-
     private static CarRentalModel instance;
 
     private Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
@@ -181,13 +178,7 @@ public class CarRentalModel {
     private List<Car> getCarsByCarType(String companyName, CarType carType) {
         // FIXME: use persistence instead
         List<Car> out = new ArrayList<>();
-        for (CarRentalCompany crc : CRCS.values()) {
-            for (Car c : crc.getCars()) {
-                if (c.getType() == carType) {
-                    out.add(c);
-                }
-            }
-        }
+        
         
         return out;
 

@@ -1,18 +1,14 @@
 package ds.gae.entities;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.List;
 
 
 
-import com.google.appengine.repackaged.com.google.datastore.v1.client.DatastoreOptions;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
-import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
@@ -23,6 +19,7 @@ public class Car {
     private CarType carType;
     private Set<Reservation> reservations;
     private Datastore datastore;
+    private String rentalCompany;
 
     /***************
      * CONSTRUCTOR *
@@ -32,7 +29,18 @@ public class Car {
         this.id = uid;
         this.carType = carType;
         this.reservations = new HashSet<Reservation>();
+        this.rentalCompany = null;
     	datastore = com.google.cloud.datastore.DatastoreOptions.getDefaultInstance().getService();
+    	createEntity();
+    }
+    
+    public Car(int uid, CarType carType, String rental){
+    	this.id = uid;
+        this.carType = carType;
+        this.reservations = new HashSet<Reservation>();
+        this.rentalCompany = rental;
+    	datastore = com.google.cloud.datastore.DatastoreOptions.getDefaultInstance().getService();
+    	createEntity();
     }
     
     public Car(Entity entity) {
@@ -93,7 +101,7 @@ public class Car {
 		return car;
     }
     
-    public void saveCar() {
+    public void createEntity() {
     	datastore.put(getGaeEntity());
     }
     
@@ -116,5 +124,8 @@ public class Car {
     	
     	this.reservations = reservations;
 	}
-    
+
+    public void setRentalCompany(String rental) {
+    	this.rentalCompany = rental;
+    }
 }

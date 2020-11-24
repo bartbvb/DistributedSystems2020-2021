@@ -2,9 +2,39 @@
 .classpath
 .project
 Java RMI 1/build.xml
-Java RMI 1/build.xml
+Java RMI 2/build.xml
 Java RMI 1/debug.log
 Java RMI 1/Java RMI 1.iml
 Java RMI 1/bin/*
 Java RMI 1/out/*
+*/out/*
+*/bin/*
 *.zip
+*.log
+/Java EE 1/CarRental/nbproject/private/
+/Java EE 1/CarRental-client/nbproject/private/
+/Java EE 1/CarRental-ejb/nbproject/private/
+/Java EE 1/CarRental-lib/nbproject/private/
+/Java EE 1/CarRental-lib/build/
+/Java EE 1/CarRental-client/dist/
+/Java EE 1/CarRental-lib/dist/
+/Java EE 1/CarRental-client/build/
+/Java EE 1/CarRental/build/
+/Java EE 1/CarRental-ejb/build/
+/Java EE 1/CarRental-ejb/dist/
+/Java EE 1/CarRental/dist/
+
+/Java EE 2/CarRental/nbproject/private/
+/Java EE 2/CarRental-client/nbproject/private/
+/Java EE 2/CarRental-ejb/nbproject/private/
+/Java EE 2/CarRental-lib/nbproject/private/
+/Java EE 2/CarRental-lib/build/
+/Java EE 2/CarRental-client/dist/
+/Java EE 2/CarRental-lib/dist/
+/Java EE 2/CarRental-client/build/
+/Java EE 2/CarRental/build/
+/Java EE 2/CarRental-ejb/build/
+/Java EE 2/CarRental-ejb/dist/
+/Java EE 2/CarRental/dist/
+
+/GAE 1/target/

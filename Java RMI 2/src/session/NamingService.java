@@ -1,5 +1,6 @@
 package session;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Map;
@@ -7,11 +8,10 @@ import java.util.Set;
 
 import java.util.List;
 
-import rental.CarType;
 import rental.ICarRentalCompany;
 import rental.ReservationConstraints;
 
-public class NamingService implements INamingService{
+public class NamingService implements Serializable, INamingService{
 
 	//Data sets
 	Map<String, ICarRentalCompany> registeredCompanies;

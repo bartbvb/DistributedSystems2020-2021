@@ -1,12 +1,13 @@
 package rental;
 
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Car {
+public class Car implements Serializable {
 
     private int id;
     private CarType type;

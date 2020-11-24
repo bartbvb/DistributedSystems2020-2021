@@ -65,7 +65,7 @@ public class ReservationSession implements IReservationSession{
      * @throws RemoteException
      */
     @Override
-    public synchronized List<Quote> getCurrentQuotes() throws RemoteException {
+    public List<Quote> getCurrentQuotes() throws RemoteException {
         return _quoteList;
     }
 
@@ -142,6 +142,7 @@ public class ReservationSession implements IReservationSession{
     @Override
     public void cleanSession() throws RemoteException {
         _quoteList.clear();
+        _clientName = "";
     }
 
     private NamingService ns = null;

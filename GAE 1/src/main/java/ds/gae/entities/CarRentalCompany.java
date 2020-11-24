@@ -11,10 +11,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
-import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.Key;
+import com.google.cloud.datastore.*;
 import ds.gae.ReservationException;
 
 public class CarRentalCompany {
@@ -36,6 +33,7 @@ public class CarRentalCompany {
         this.cars = cars;
         for(Car car : cars) {
             carTypes.put(car.getType().getName(), car.getType());
+            car.setRentalCompany(name);
         }
         datastore = DatastoreOptions.getDefaultInstance().getService();
         createEntity();
@@ -56,7 +54,6 @@ public class CarRentalCompany {
                 .set("name", name)
                 .build();
         datastore.put(entity);
-        //TODO: Fill cars and reservations
     }
 
     public Entity getEntity(){
@@ -66,6 +63,20 @@ public class CarRentalCompany {
     public void load(Entity ent){
         this.name = ent.getString("name");
         //TODO: Fill cars and reservations
+        Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind("Car")
+                .setFilter(StructuredQuery.PropertyFilter.hasAncestor(ent.getKey()))
+                .build();
+        QueryResults<Entity> results = datastore.run(query);
+
+        Set<Car> cars = new HashSet<>();
+
+        while(results.hasNext()) {
+            Car car = new Car(results.next());
+            cars.add(car);
+        }
+
+        this.cars = cars;
     }
 
     /********

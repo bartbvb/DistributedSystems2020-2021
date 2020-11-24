@@ -62,13 +62,11 @@ public class CarRentalCompany {
 
     public void load(Entity ent){
         this.name = ent.getString("name");
-        //TODO: Fill cars and reservations
         Query<Entity> query = Query.newEntityQueryBuilder()
                 .setKind("Car")
                 .setFilter(StructuredQuery.PropertyFilter.hasAncestor(ent.getKey()))
                 .build();
         QueryResults<Entity> results = datastore.run(query);
-
         Set<Car> cars = new HashSet<>();
 
         while(results.hasNext()) {

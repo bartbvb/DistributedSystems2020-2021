@@ -48,7 +48,9 @@ public class CarRentalModel {
                 .setFilter(StructuredQuery.PropertyFilter.eq("name",name))
                 .build();
         QueryResults<Entity> results = datastore.run(query);
-        return new CarRentalCompany(results.next());
+
+        CarRentalCompany crc = new CarRentalCompany(results.next());
+        return crc;
     }
 
     /**
@@ -83,6 +85,7 @@ public class CarRentalModel {
     public Quote createQuote(String companyName, String renterName, ReservationConstraints constraints)
             throws ReservationException {
         CarRentalCompany crc = getCRC(companyName);
+        System.out.println(crc.getCars().size());
         return crc.createQuote(constraints, renterName);
     }
 

@@ -5,12 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.Key;
-import com.google.cloud.datastore.Query;
-import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.datastore.*;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
 public class Car {
@@ -44,6 +39,7 @@ public class Car {
     }
     
     public Car(Entity entity) {
+        datastore = com.google.cloud.datastore.DatastoreOptions.getDefaultInstance().getService();
     	this.load(entity);
     }
 
@@ -94,7 +90,7 @@ public class Car {
     }
     
     public Entity getGaeEntity(){    	
-    	Key carkey = datastore.newKeyFactory().setKind("Car").newKey(id);
+    	Key carkey = datastore.newKeyFactory().addAncestor(PathElement.of("CarRentalCompany",this.rentalCompany)).setKind("Car").newKey(id);
     			Entity car = Entity.newBuilder(carkey)
     			.set("carType", this.carType.getName())
     			.build();
@@ -107,7 +103,7 @@ public class Car {
     
     public void load(Entity entity){
     	this.id = Math.toIntExact(entity.getKey().getId());
-    	Key carTypeKey = datastore.newKeyFactory().setKind("carType").newKey(entity.getString("carType"));
+    	Key carTypeKey = datastore.newKeyFactory().setKind("CarType").newKey(entity.getString("carType"));
     	this.carType = new CarType(datastore.get(carTypeKey));
     	Query<Entity> query = Query.newEntityQueryBuilder()
     			.setKind("Reservation")

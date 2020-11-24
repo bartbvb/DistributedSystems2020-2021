@@ -1,10 +1,17 @@
 package ds.gae.entities;
 
+import com.google.cloud.datastore.*;
+
 import java.util.Date;
 import java.util.Objects;
 
+import static com.google.appengine.api.search.DateUtil.serializeDate;
+
 public class Reservation extends Quote {
 
+    private Datastore datastore;
+    private Key key;
+    private Entity entity;
     private int carId;
 
     /***************
@@ -21,6 +28,7 @@ public class Reservation extends Quote {
                 quote.getRentalPrice()
         );
         this.carId = carId;
+        datastore = DatastoreOptions.getDefaultInstance().getService();
     }
 
     private Reservation(
@@ -31,6 +39,7 @@ public class Reservation extends Quote {
             String carType,
             double rentalPrice) {
         super(renter, start, end, rentalCompany, carType, rentalPrice);
+        datastore = DatastoreOptions.getDefaultInstance().getService();
     }
 
     /******
@@ -39,6 +48,27 @@ public class Reservation extends Quote {
 
     public int getCarId() {
         return carId;
+    }
+
+    public Key getKey(){
+        if(key != null) return key;
+        KeyFactory keyFactory = datastore.newKeyFactory().setKind("Reservation");
+        key = datastore.allocateId(keyFactory.newKey());
+        return key;
+    }
+
+    public Entity getEntity(){
+        if(entity != null) return entity;
+        entity = Entity.newBuilder(getKey())
+                .set("renter", super.getRenter())
+                .set("startDate", serializeDate(super.getStartDate()))
+                .set("endDate", serializeDate(super.getEndDate()))
+                .set("rentalCompany",super.getRentalCompany())
+                .set("carType",super.getCarType())
+                .set("rentalPrice",super.getRentalPrice())
+                .set("carId",carId)
+                .build();
+        return entity;
     }
 
     /*************

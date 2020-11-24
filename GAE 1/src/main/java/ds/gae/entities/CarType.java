@@ -2,7 +2,13 @@ package ds.gae.entities;
 
 import java.util.Objects;
 
+import com.google.cloud.datastore.*;
+
 public class CarType {
+
+    private Datastore datastore;
+    private Key key;
+    private Entity entity;
 
     private String name;
     private int nbOfSeats;
@@ -26,6 +32,25 @@ public class CarType {
         this.trunkSpace = trunkSpace;
         this.rentalPricePerDay = rentalPricePerDay;
         this.smokingAllowed = smokingAllowed;
+        datastore = DatastoreOptions.getDefaultInstance().getService();
+    }
+
+    public Key getKey(){
+        if(key != null) return key;
+        key = datastore.newKeyFactory().setKind("CarType").newKey(name);
+        return key;
+    }
+
+    public Entity getEntity(){
+        if(entity != null) return entity;
+        entity = Entity.newBuilder(getKey())
+                .set("name", name)
+                .set("nbOfSeats",nbOfSeats)
+                .set("trunkSpace",trunkSpace)
+                .set("rentalPricePerDay",rentalPricePerDay)
+                .set("smokingAllowed",smokingAllowed)
+                .build();
+        return entity;
     }
 
     public String getName() {

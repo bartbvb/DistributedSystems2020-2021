@@ -56,6 +56,14 @@ public class CarType {
         return datastore.get(key);
     }
 
+    public void load(Entity ent){
+        this.name = ent.getString("name");
+        this.nbOfSeats = (int)ent.getLong("nbOfSeats");
+        this.trunkSpace = (float)ent.getDouble("trunkSpace");
+        this.rentalPricePerDay = ent.getDouble("rentalPricePerDay");
+        this.smokingAllowed = ent.getBoolean("smokingAllowed");
+    }
+
     public String getName() {
         return name;
     }

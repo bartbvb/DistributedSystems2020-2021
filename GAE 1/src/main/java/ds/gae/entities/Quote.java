@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.google.appengine.api.search.DateUtil.deserializeDate;
 import static com.google.appengine.api.search.DateUtil.serializeDate;
 
 public class Quote {
@@ -80,6 +81,15 @@ public class Quote {
 
     public Entity getEntity(){
         return datastore.get(getKey());
+    }
+
+    public void load(Entity ent){
+        this.renter = ent.getString("renter");
+        this.startDate = deserializeDate(ent.getString("startDate"));
+        this.endDate = deserializeDate(ent.getString("endDate"));
+        this.rentalCompany = ent.getString("rentalCompany");
+        this.carType = ent.getString("carType");
+        this.rentalPrice = ent.getDouble("rentalPrice");
     }
 
     /*************

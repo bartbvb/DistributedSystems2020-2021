@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
 import ds.gae.ReservationException;
 
@@ -43,6 +44,20 @@ public class CarRentalCompany {
         if(key != null) return key;
         key = datastore.newKeyFactory().setKind("CarRentalCompany").newKey(name);
         return key;
+    }
+    private void createEntity(){
+        Entity entity = Entity.newBuilder(getKey())
+                .set("name", name)
+                .build();
+        datastore.put(entity);
+    }
+
+    public Entity getEntity(){
+        return datastore.get(key);
+    }
+
+    public void load(Entity ent){
+        this.name = ent.getString("name");
     }
 
     /********

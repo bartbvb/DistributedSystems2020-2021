@@ -40,6 +40,11 @@ public class CarRentalCompany {
         datastore = DatastoreOptions.getDefaultInstance().getService();
     }
 
+    public CarRentalCompany(Entity entity){
+        datastore = DatastoreOptions.getDefaultInstance().getService();
+        load(entity);
+    }
+
     public Key getKey(){
         if(key != null) return key;
         key = datastore.newKeyFactory().setKind("CarRentalCompany").newKey(name);

@@ -8,7 +8,6 @@ public class CarType {
 
     private Datastore datastore;
     private Key key;
-    private Entity entity;
 
     private String name;
     private int nbOfSeats;
@@ -33,6 +32,7 @@ public class CarType {
         this.rentalPricePerDay = rentalPricePerDay;
         this.smokingAllowed = smokingAllowed;
         datastore = DatastoreOptions.getDefaultInstance().getService();
+        createEntity();
     }
 
     public Key getKey(){
@@ -41,16 +41,19 @@ public class CarType {
         return key;
     }
 
-    public Entity getEntity(){
-        if(entity != null) return entity;
-        entity = Entity.newBuilder(getKey())
+    private void createEntity(){
+        Entity entity = Entity.newBuilder(getKey())
                 .set("name", name)
                 .set("nbOfSeats",nbOfSeats)
                 .set("trunkSpace",trunkSpace)
                 .set("rentalPricePerDay",rentalPricePerDay)
                 .set("smokingAllowed",smokingAllowed)
                 .build();
-        return entity;
+        datastore.put(entity);
+    }
+
+    public Entity getEntity(){
+        return datastore.get(key);
     }
 
     public String getName() {

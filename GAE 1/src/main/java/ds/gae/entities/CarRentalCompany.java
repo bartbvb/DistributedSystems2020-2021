@@ -11,12 +11,17 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.datastore.Key;
 import ds.gae.ReservationException;
 
 public class CarRentalCompany {
 
     private static final Logger logger = Logger.getLogger(CarRentalCompany.class.getName());
 
+    private Datastore datastore;
+    private Key key;
     private String name;
     private Set<Car> cars;
     private Map<String, CarType> carTypes = new HashMap<>();
@@ -31,6 +36,13 @@ public class CarRentalCompany {
         for(Car car : cars) {
             carTypes.put(car.getType().getName(), car.getType());
         }
+        datastore = DatastoreOptions.getDefaultInstance().getService();
+    }
+
+    public Key getKey(){
+        if(key != null) return key;
+        key = datastore.newKeyFactory().setKind("CarRentalCompany").newKey(name);
+        return key;
     }
 
     /********

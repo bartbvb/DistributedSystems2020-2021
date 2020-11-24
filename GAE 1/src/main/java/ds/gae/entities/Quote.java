@@ -12,7 +12,6 @@ public class Quote {
 
     private Datastore datastore;
     private Key key;
-    private Entity entity;
 
     private Date startDate;
     private Date endDate;
@@ -33,6 +32,7 @@ public class Quote {
         this.carType = carType;
         this.rentalPrice = rentalPrice;
         datastore = DatastoreOptions.getDefaultInstance().getService();
+        createEntity();
     }
 
     public Date getStartDate() {
@@ -66,9 +66,8 @@ public class Quote {
         return key;
     }
 
-    public Entity getEntity(){
-        if(entity != null) return entity;
-        entity = Entity.newBuilder(getKey())
+    private void createEntity(){
+        Entity entity = Entity.newBuilder(getKey())
                 .set("renter", renter)
                 .set("startDate", serializeDate(startDate))
                 .set("endDate", serializeDate(endDate))
@@ -76,7 +75,11 @@ public class Quote {
                 .set("carType",carType)
                 .set("rentalPrice",rentalPrice)
                 .build();
-        return entity;
+        datastore.put(entity);
+    }
+
+    public Entity getEntity(){
+        return datastore.get(getKey());
     }
 
     /*************

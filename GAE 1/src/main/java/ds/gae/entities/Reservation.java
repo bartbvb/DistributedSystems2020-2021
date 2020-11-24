@@ -5,13 +5,13 @@ import com.google.cloud.datastore.*;
 import java.util.Date;
 import java.util.Objects;
 
+import static com.google.appengine.api.search.DateUtil.deserializeDate;
 import static com.google.appengine.api.search.DateUtil.serializeDate;
 
 public class Reservation extends Quote {
 
     private Datastore datastore;
     private Key key;
-    private Entity entity;
     private int carId;
 
     /***************
@@ -57,9 +57,8 @@ public class Reservation extends Quote {
         return key;
     }
 
-    public Entity getEntity(){
-        if(entity != null) return entity;
-        entity = Entity.newBuilder(getKey())
+    public Entity createEntity(){
+        Entity entity = Entity.newBuilder(getKey())
                 .set("renter", super.getRenter())
                 .set("startDate", serializeDate(super.getStartDate()))
                 .set("endDate", serializeDate(super.getEndDate()))
@@ -69,6 +68,15 @@ public class Reservation extends Quote {
                 .set("carId",carId)
                 .build();
         return entity;
+    }
+
+    public Entity getEntity(){
+        return datastore.get(getKey());
+    }
+
+    public void load(Entity ent){
+        super.load(ent);
+        this.carId = (int)ent.getLong("carId");
     }
 
     /*************

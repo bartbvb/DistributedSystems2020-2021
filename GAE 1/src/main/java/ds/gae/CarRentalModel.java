@@ -188,7 +188,7 @@ public class CarRentalModel {
                 }
             }
         }
-        
+
         return out;
 
     }

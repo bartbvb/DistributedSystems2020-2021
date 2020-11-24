@@ -10,7 +10,6 @@ import static com.google.appengine.api.search.DateUtil.serializeDate;
 
 public class Reservation extends Quote {
 
-    private Datastore datastore;
     private Key key;
     private int carId;
 
@@ -28,7 +27,10 @@ public class Reservation extends Quote {
                 quote.getRentalPrice()
         );
         this.carId = carId;
-        datastore = DatastoreOptions.getDefaultInstance().getService();
+    }
+    public Reservation(Entity ent){
+        super(ent);
+        this.load(ent);
     }
     
     public Reservation(Entity entity) {
@@ -49,7 +51,6 @@ public class Reservation extends Quote {
             String carType,
             double rentalPrice) {
         super(renter, start, end, rentalCompany, carType, rentalPrice);
-        datastore = DatastoreOptions.getDefaultInstance().getService();
     }
 
     /******
@@ -60,13 +61,14 @@ public class Reservation extends Quote {
         return carId;
     }
 
+    @Override
     public Key getKey(){
         if(key != null) return key;
         KeyFactory keyFactory = datastore.newKeyFactory().addAncestor(PathElement.of("car", carId)).setKind("Reservation");
         key = datastore.allocateId(keyFactory.newKey());
         return key;
     }
-
+    @Override
     public void createEntity(){
         Entity entity = Entity.newBuilder(getKey())
                 .set("renter", super.getRenter())
@@ -79,11 +81,11 @@ public class Reservation extends Quote {
                 .build();
         datastore.put(entity);
     }
-
+    @Override
     public Entity getEntity(){
         return datastore.get(getKey());
     }
-
+    @Override
     public void load(Entity ent){
         super.load(ent);
         this.carId = (int)ent.getLong("carId");

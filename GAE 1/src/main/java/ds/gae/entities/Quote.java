@@ -11,7 +11,7 @@ import static com.google.appengine.api.search.DateUtil.serializeDate;
 
 public class Quote {
 
-    private Datastore datastore;
+    protected Datastore datastore;
     private Key key;
 
     private Date startDate;
@@ -34,6 +34,10 @@ public class Quote {
         this.rentalPrice = rentalPrice;
         datastore = DatastoreOptions.getDefaultInstance().getService();
         createEntity();
+    }
+    Quote(Entity ent){
+        datastore = DatastoreOptions.getDefaultInstance().getService();
+        load(ent);
     }
 
     public Date getStartDate() {
@@ -67,7 +71,7 @@ public class Quote {
         return key;
     }
 
-    private void createEntity(){
+    public void createEntity(){
         Entity entity = Entity.newBuilder(getKey())
                 .set("renter", renter)
                 .set("startDate", serializeDate(startDate))

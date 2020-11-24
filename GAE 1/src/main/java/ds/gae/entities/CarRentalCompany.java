@@ -38,6 +38,7 @@ public class CarRentalCompany {
             carTypes.put(car.getType().getName(), car.getType());
         }
         datastore = DatastoreOptions.getDefaultInstance().getService();
+        createEntity();
     }
 
     public CarRentalCompany(Entity entity){
@@ -55,14 +56,16 @@ public class CarRentalCompany {
                 .set("name", name)
                 .build();
         datastore.put(entity);
+        //TODO: Fill cars and reservations
     }
 
     public Entity getEntity(){
-        return datastore.get(key);
+        return datastore.get(getKey());
     }
 
     public void load(Entity ent){
         this.name = ent.getString("name");
+        //TODO: Fill cars and reservations
     }
 
     /********

@@ -57,7 +57,7 @@ public class Reservation extends Quote {
         return key;
     }
 
-    public Entity createEntity(){
+    public void createEntity(){
         Entity entity = Entity.newBuilder(getKey())
                 .set("renter", super.getRenter())
                 .set("startDate", serializeDate(super.getStartDate()))
@@ -67,7 +67,7 @@ public class Reservation extends Quote {
                 .set("rentalPrice",super.getRentalPrice())
                 .set("carId",carId)
                 .build();
-        return entity;
+        datastore.put(entity);
     }
 
     public Entity getEntity(){

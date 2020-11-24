@@ -65,7 +65,7 @@ public class Reservation extends Quote {
     @Override
     public Key getKey(){
         if(key != null) return key;
-        KeyFactory keyFactory = datastore.newKeyFactory().addAncestor(PathElement.of("car", carId)).setKind("Reservation");
+        KeyFactory keyFactory = datastore.newKeyFactory().addAncestor(PathElement.of("Car", carId)).setKind("Reservation");
         key = datastore.allocateId(keyFactory.newKey());
         return key;
     }

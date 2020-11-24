@@ -1,9 +1,18 @@
 package ds.gae.entities;
 
+import com.google.cloud.datastore.*;
+
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
+import static com.google.appengine.api.search.DateUtil.serializeDate;
+
 public class Quote {
+
+    private Datastore datastore;
+    private Key key;
+    private Entity entity;
 
     private Date startDate;
     private Date endDate;
@@ -23,6 +32,7 @@ public class Quote {
         this.rentalCompany = rentalCompany;
         this.carType = carType;
         this.rentalPrice = rentalPrice;
+        datastore = DatastoreOptions.getDefaultInstance().getService();
     }
 
     public Date getStartDate() {
@@ -47,6 +57,26 @@ public class Quote {
 
     public String getCarType() {
         return carType;
+    }
+
+    public Key getKey(){
+        if(key != null) return key;
+        KeyFactory keyFactory = datastore.newKeyFactory().setKind("Quote");
+        key = datastore.allocateId(keyFactory.newKey());
+        return key;
+    }
+
+    public Entity getEntity(){
+        if(entity != null) return entity;
+        entity = Entity.newBuilder(getKey())
+                .set("renter", renter)
+                .set("startDate", serializeDate(startDate))
+                .set("endDate", serializeDate(endDate))
+                .set("rentalCompany",rentalCompany)
+                .set("carType",carType)
+                .set("rentalPrice",rentalPrice)
+                .build();
+        return entity;
     }
 
     /*************

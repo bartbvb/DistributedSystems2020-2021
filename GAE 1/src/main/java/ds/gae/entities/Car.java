@@ -81,13 +81,6 @@ public class Car {
     public Entity getGaeEntity(){
     	Datastore store = com.google.cloud.datastore.DatastoreOptions.getDefaultInstance().getService();
     	
-    	EmbeddedEntity embed = new EmbeddedEntity();
-    	
-    	for (Reservation i: reservations) {
-    		Entity res = i.getEntity();
-    		embed.setProperty(res.toString(), res);
-    	}
-    	
     	Key carkey = store.newKeyFactory().setKind("car").newKey(id);
     			Entity car = Entity.newBuilder(carkey)
     			.set("carType", this.carType.getName())

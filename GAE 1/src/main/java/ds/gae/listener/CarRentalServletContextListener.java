@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import com.google.cloud.datastore.DatastoreOptions;
 import ds.gae.CarRentalModel;
 import ds.gae.entities.Car;
 import ds.gae.entities.CarRentalCompany;
@@ -49,7 +50,8 @@ public class CarRentalServletContextListener implements ServletContextListener {
             Set<Car> cars = loadData(name, datafile);
             CarRentalCompany company = new CarRentalCompany(name, cars);
             // FIXME: use persistence instead
-            CarRentalModel.get().CRCS.put(name, company);
+            //CarRentalModel.get().CRCS.put(name, company);
+            DatastoreOptions.getDefaultInstance().getService().put(company.getEntity());
         } catch (NumberFormatException ex) {
             Logger.getLogger(CarRentalServletContextListener.class.getName()).log(Level.SEVERE, "bad file", ex);
         } catch (IOException ex) {

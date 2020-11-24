@@ -179,7 +179,6 @@ public class CarRentalModel {
         // FIXME: use persistence instead
         List<Car> out = new ArrayList<>();
         
-        
         return out;
 
     }

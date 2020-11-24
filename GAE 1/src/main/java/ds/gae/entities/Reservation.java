@@ -32,7 +32,7 @@ public class Reservation extends Quote {
         super(ent);
         this.load(ent);
     }
-    
+    /*
     public Reservation(Entity entity) {
         this(entity.getString("renter"), 
         		deserializeDate(entity.getString("startDate")), 
@@ -42,6 +42,7 @@ public class Reservation extends Quote {
 				entity.getDouble("rentalPrice"));
         this.carId = Math.toIntExact(entity.getLong("carId"));
     }
+*/
 
     private Reservation(
             String renter,

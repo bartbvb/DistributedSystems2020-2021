@@ -87,7 +87,6 @@ public class CarRentalModel {
     public Quote createQuote(String companyName, String renterName, ReservationConstraints constraints)
             throws ReservationException {
         CarRentalCompany crc = getCRC(companyName);
-        System.out.println(crc.getCars().size());
         return crc.createQuote(constraints, renterName);
     }
 

@@ -24,7 +24,6 @@ public class Quote {
     /***************
      * CONSTRUCTOR *
      ***************/
-
     Quote(String renter, Date start, Date end, String rentalCompany, String carType, double rentalPrice) {
         this.renter = renter;
         this.startDate = start;
@@ -33,7 +32,6 @@ public class Quote {
         this.carType = carType;
         this.rentalPrice = rentalPrice;
         datastore = DatastoreOptions.getDefaultInstance().getService();
-        createEntity();
     }
     Quote(Entity ent){
         datastore = DatastoreOptions.getDefaultInstance().getService();

@@ -71,6 +71,8 @@ public class CarRentalCompany {
 
         while(results.hasNext()) {
             Car car = new Car(results.next());
+            carTypes.put(car.getType().getName(), car.getType());
+            car.setRentalCompany(this.name);
             cars.add(car);
         }
 
@@ -162,8 +164,7 @@ public class CarRentalCompany {
                 constraints.getStartDate(),
                 constraints.getEndDate()
         );
-
-        return new Quote(
+        Quote q = new Quote(
                 client,
                 constraints.getStartDate(),
                 constraints.getEndDate(),
@@ -171,6 +172,8 @@ public class CarRentalCompany {
                 constraints.getCarType(),
                 price
         );
+        q.createEntity();
+        return q;
     }
 
     // Implementation can be subject to different pricing strategies

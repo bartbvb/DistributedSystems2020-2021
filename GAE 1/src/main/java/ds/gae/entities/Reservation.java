@@ -27,6 +27,7 @@ public class Reservation extends Quote {
                 quote.getRentalPrice()
         );
         this.carId = carId;
+        createEntity();
     }
     public Reservation(Entity ent){
         super(ent);

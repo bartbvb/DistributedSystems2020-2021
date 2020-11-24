@@ -49,7 +49,6 @@ public class CarRentalServletContextListener implements ServletContextListener {
         try {
             Set<Car> cars = loadData(name, datafile);
             CarRentalCompany company = new CarRentalCompany(name, cars);
-            // FIXME: use persistence instead
             //CarRentalModel.get().CRCS.put(name, company);
             DatastoreOptions.getDefaultInstance().getService().put(company.getEntity());
         } catch (NumberFormatException ex) {

@@ -5,7 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-import com.google.cloud.datastore.*;
+
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.Key;
+import com.google.cloud.datastore.PathElement;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
 public class Car {
@@ -89,8 +95,8 @@ public class Car {
         reservations.remove(reservation);
     }
     
-    public Entity getGaeEntity(){    	
-    	Key carkey = datastore.newKeyFactory().addAncestor(PathElement.of("CarRentalCompany",this.rentalCompany)).setKind("Car").newKey(id);
+    public Entity getGaeEntity(){
+    	Key carkey = datastore.newKeyFactory().addAncestor(PathElement.of("CarRentalCompany", rentalCompany)).setKind("Car").newKey(id);
     			Entity car = Entity.newBuilder(carkey)
     			.set("carType", this.carType.getName())
     			.build();

@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.cloud.datastore.*;
+import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
+
 import ds.gae.entities.Car;
 import ds.gae.entities.CarRentalCompany;
 import ds.gae.entities.CarType;
@@ -179,8 +181,20 @@ public class CarRentalModel {
      * @return List of cars of the given car type
      */
     private List<Car> getCarsByCarType(String companyName, CarType carType) {
-        // FIXME: use persistence instead
         List<Car> out = new ArrayList<>();
+        Key compkey = datastore.newKeyFactory().setKind("CarRentalCompany").newKey(companyName);
+        Query<Entity> query = Query.newEntityQueryBuilder()
+        		.setKind("Car")
+        		.setFilter(PropertyFilter.hasAncestor(compkey))
+        		.setFilter(PropertyFilter.eq("carType", carType.getName()))
+        		.build();
+        
+        QueryResults<Entity> results = datastore.run(query);
+    	    	
+    	while(results.hasNext()) {
+    		Car car = new Car(results.next());
+    		out.add(car);
+    	}
         
         return out;
 

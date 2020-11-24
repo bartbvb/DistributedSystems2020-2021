@@ -89,18 +89,6 @@ public class NamingService implements Serializable, INamingService{
 			}
 		}
 	}
-	
-	
-	public synchronized ReservationSession getUserSession(String user) throws RemoteException {
-		ReservationSession session;
-		try {
-			session = rentalSessions.get(user);
-			return session;
-		}catch (Exception e) {
-			session = this.createReservationSession(user);
-			return session;
-		}
-	}
 
 
 	public ReservationConstraints createConstraints(Date start, Date end, String carType, String region)

@@ -16,7 +16,7 @@
            Please set the following parameter for the filename
            for the final zip to `gae1.firstname.lastname`.
         ************************************************************* -->
-        <zip.filename>gae1.ADDFIRSTNAME.ADDLASTNAME</zip.filename>
+        <zip.filename>gae2.ADDFIRSTNAME.ADDLASTNAME</zip.filename>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

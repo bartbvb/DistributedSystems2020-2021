@@ -96,9 +96,10 @@ public class CarRentalModel {
      * @param quote Quote to confirm
      * @throws ReservationException Confirmation of given quote failed.
      */
-    public void confirmQuote(Quote quote) throws ReservationException {
+    public Reservation confirmQuote(Quote quote) throws ReservationException {
         CarRentalCompany crc = getCRC(quote.getRentalCompany());
-        crc.confirmQuote(quote);
+        Reservation res = crc.confirmQuote(quote);
+        return res;
     }
 
     /**
@@ -109,9 +110,30 @@ public class CarRentalModel {
      * @throws ReservationException One of the quotes cannot be confirmed. Therefore
      *                              none of the given quotes is confirmed.
      */
-    public List<Reservation> confirmQuotes(List<Quote> quotes) throws ReservationException {
-        // TODO: add implementation when time left, required for GAE2
-        return null;
+    @SuppressWarnings("finally")
+	public List<Reservation> confirmQuotes(List<Quote> quotes) throws ReservationException {
+        Transaction tx = datastore.newTransaction();
+        List<Entity> list = new ArrayList<>();
+        List<Reservation> result = new ArrayList<>();
+        for(Quote quote: quotes) {
+        	Reservation res = confirmQuote(quote);
+    		list.add(res.getEntity());
+    		result.add(res);
+    	}
+        try {
+        	for(Entity ent: list) {
+        		tx.add(ent);
+        		tx.commit();
+        	}
+        }
+        finally {
+        	if(tx.isActive()) {
+        		tx.rollback();
+        		throw new ReservationException("couldn't confirm all quotes");
+        	} else {
+        		return result;
+        	}
+        }
     }
 
     /**

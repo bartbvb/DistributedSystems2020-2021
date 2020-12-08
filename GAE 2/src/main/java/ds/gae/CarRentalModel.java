@@ -113,19 +113,21 @@ public class CarRentalModel {
     @SuppressWarnings("finally")
 	public List<Reservation> confirmQuotes(List<Quote> quotes) throws ReservationException {
         Transaction tx = datastore.newTransaction();
-        List<Entity> list = new ArrayList<>();
         List<Reservation> result = new ArrayList<>();
-        for(Quote quote: quotes) {
-        	Reservation res = confirmQuote(quote);
-    		list.add(res.getEntity());
-    		result.add(res);
-    	}
         try {
+            for (Quote quote : quotes) {
+                Reservation res = confirmQuote(quote);
+                result.add(res);
+                datastore.put(res.getEntity());
+                tx.commit();
+            }
+        }
+        /*try {
         	for(Entity ent: list) {
         		tx.add(ent);
         		tx.commit();
         	}
-        }
+        }*/
         finally {
         	if(tx.isActive()) {
         		tx.rollback();

@@ -189,6 +189,10 @@ public class CarRentalCompany {
                     + " are unavailable from " + quote.getStartDate() + " to " + quote.getEndDate());
         }
         Car car = availableCars.get((int) (Math.random() * availableCars.size()));
+        Reservation res = new Reservation(quote, car.getId());
+        car.addReservation(res);
+        return res;
+        /*
         Transaction tx = datastore.newTransaction();
         try {
             Reservation res = new Reservation(quote, car.getId());
@@ -199,7 +203,7 @@ public class CarRentalCompany {
             if(tx.isActive()){
                 tx.rollback();
             }
-        }
+        }*/
     }
 
     public void cancelReservation(Reservation res) {

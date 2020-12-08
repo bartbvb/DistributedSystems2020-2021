@@ -2,6 +2,7 @@ package ds.gae.entities;
 
 import com.google.cloud.datastore.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -9,9 +10,10 @@ import java.util.Objects;
 import static com.google.appengine.api.search.DateUtil.deserializeDate;
 import static com.google.appengine.api.search.DateUtil.serializeDate;
 
-public class Quote {
+public class Quote implements Serializable {
 
-    protected Datastore datastore;
+
+    protected transient Datastore datastore;
     private Key key;
 
     private Date startDate;

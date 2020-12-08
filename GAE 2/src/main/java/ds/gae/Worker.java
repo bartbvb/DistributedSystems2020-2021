@@ -1,8 +1,13 @@
 package ds.gae;
 
+import ds.gae.entities.Quote;
+
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +19,14 @@ public class Worker extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        try{
+            ServletInputStream in = req.getInputStream();
+            ArrayList<Quote> qs = (ArrayList<Quote>)new ObjectInputStream(in).readObject();
+            System.out.println(qs.size());
+            CarRentalModel.get().confirmQuotes(qs);
+        } catch (ClassNotFoundException | ReservationException e) {
+            e.printStackTrace();
+        }
+
     }
 }

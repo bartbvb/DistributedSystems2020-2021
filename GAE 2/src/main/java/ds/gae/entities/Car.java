@@ -1,7 +1,9 @@
 package ds.gae.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -12,6 +14,7 @@ import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.PathElement;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
 public class Car {
@@ -77,8 +80,22 @@ public class Car {
         if (!start.before(end)) {
             throw new IllegalArgumentException("Illegal given period");
         }
+        
+        List<Reservation> reservations = new ArrayList<>();
+        Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind("Reservation")
+                .setFilter(StructuredQuery.PropertyFilter.eq("carId",this.id))
+                .build();
+        QueryResults<Entity> results = datastore.run(query);
+        for (QueryResults<Entity> it = results; it.hasNext(); ) {
+            Entity e = it.next();
+            Reservation res = new Reservation(e);
+            reservations.add(res);
+        }
+        
 
-        for (Reservation reservation : getReservations()) {
+        //for (Reservation reservation : getReservations()) {
+        for (Reservation reservation : reservations) {
             if (reservation.getEndDate().before(start) || reservation.getStartDate().after(end)) {
                 continue;
             }

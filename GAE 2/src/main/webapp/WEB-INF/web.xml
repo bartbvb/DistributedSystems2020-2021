@@ -55,4 +55,22 @@
         <servlet-name>Worker</servlet-name>
         <url-pattern>/worker</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ReservationOverview</servlet-name>
+        <servlet-class>ds.gae.servlets.ReservationOverviewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReservationOverview</servlet-name>
+        <url-pattern>/reservationOverview</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ConfirmationMessage</servlet-name>
+        <servlet-class>ds.gae.servlets.ConfirmationMessageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ConfirmationMessage</servlet-name>
+        <url-pattern>/confirmationMessage</url-pattern>
+    </servlet-mapping>
 </web-app>

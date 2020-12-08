@@ -87,12 +87,14 @@ public class Car {
                 .setFilter(StructuredQuery.PropertyFilter.eq("carId",this.id))
                 .build();
         QueryResults<Entity> results = datastore.run(query);
-        for (QueryResults<Entity> it = results; it.hasNext(); ) {
-            Entity e = it.next();
-            Reservation res = new Reservation(e);
-            reservations.add(res);
-        }
         
+        if (results.hasNext()) {
+	        for (QueryResults<Entity> it = results; it.hasNext();) {
+	            Entity e = it.next();
+	            Reservation res = new Reservation(e);
+	            reservations.add(res);
+	        }
+        }
 
         //for (Reservation reservation : getReservations()) {
         for (Reservation reservation : reservations) {

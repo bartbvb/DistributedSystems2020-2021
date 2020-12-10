@@ -22,7 +22,6 @@ public class Worker extends HttpServlet {
         try{
             ServletInputStream in = req.getInputStream();
             ArrayList<Quote> qs = (ArrayList<Quote>)new ObjectInputStream(in).readObject();
-            System.out.println(qs.size());
             CarRentalModel.get().confirmQuotes(qs);
         } catch (ClassNotFoundException | ReservationException e) {
             e.printStackTrace();

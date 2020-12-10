@@ -6,8 +6,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import com.google.cloud.datastore.*;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
@@ -232,5 +237,21 @@ public class CarRentalModel {
      */
     public boolean hasReservations(String renter) {
         return this.getReservations(renter).size() > 0;
+    }
+    
+    public void sendEmail(String userMail) throws ReservationException {
+    	Session session= Session.getDefaultInstance(new Properties(), null);
+    	try {
+    		Message msg = new MimeMessage(session);
+    		msg.setFrom(new InternetAddress("admin@RentalCo.appspotemail.com",     "RentalCo"));
+    		msg.addRecipient(Message.RecipientType.TO, new InternetAddress(userMail, ""));
+    		msg.setSubject("Quote confirmation");
+    		msg.setText("Your quotes have been confirmed. Check the RentalCo bookings tab to find your reservations.");
+    		Transport.send(msg);
+    	}
+    	catch(Exception e){
+    		System.out.println("CarRentalModel.sendEmail()");
+    		throw new ReservationException("Couldn't send mail to user");
+    	}
     }
 }

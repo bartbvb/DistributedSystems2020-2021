@@ -24,6 +24,7 @@ public class Worker extends HttpServlet {
             ArrayList<Quote> qs = (ArrayList<Quote>)new ObjectInputStream(in).readObject();
             System.out.println(qs.size());
             CarRentalModel.get().confirmQuotes(qs);
+            CarRentalModel.get().sendEmail(qs.get(0).getRenter());
         } catch (ClassNotFoundException | ReservationException e) {
             e.printStackTrace();
         }

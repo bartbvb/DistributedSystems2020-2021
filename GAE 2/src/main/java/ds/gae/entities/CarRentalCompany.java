@@ -157,6 +157,7 @@ public class CarRentalCompany {
 
     private List<Car> getAvailableCars(String carType, Date start, Date end) {
         List<Car> availableCars = new LinkedList<>();
+        cars = getCars();
         for (Car car : cars) {
             if (car.getType().getName().equals(carType) && car.isAvailable(start, end)) {
                 availableCars.add(car);

@@ -11,7 +11,8 @@
     <h2>Confirmation</h2>
     <div class="group">
         <p>
-           <%=renter%>, your quotes have been received
+           <%=renter%>, your quotes have been received.
+            Check the bookings tab to see an overview of which quotes have been finalized and confirmed.
         </p>
     </div>
 </div>

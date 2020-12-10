@@ -118,7 +118,7 @@ public class CarRentalModel {
             for (Quote quote : quotes) {
                 Reservation res = confirmQuote(quote);
                 result.add(res);
-                datastore.put(res.getEntity());
+                tx.add(res.getEntity());
                 tx.commit();
             }
         }
@@ -208,8 +208,9 @@ public class CarRentalModel {
         Key compkey = datastore.newKeyFactory().setKind("CarRentalCompany").newKey(companyName);
         Query<Entity> query = Query.newEntityQueryBuilder()
         		.setKind("Car")
-        		.setFilter(PropertyFilter.hasAncestor(compkey))
-        		.setFilter(PropertyFilter.eq("carType", carType.getName()))
+                .setFilter(StructuredQuery.CompositeFilter.and(
+                        PropertyFilter.hasAncestor(compkey),
+                        PropertyFilter.eq("carType", carType.getName())))
         		.build();
         
         QueryResults<Entity> results = datastore.run(query);
@@ -218,7 +219,6 @@ public class CarRentalModel {
     		Car car = new Car(results.next());
     		out.add(car);
     	}
-        
         return out;
 
     }

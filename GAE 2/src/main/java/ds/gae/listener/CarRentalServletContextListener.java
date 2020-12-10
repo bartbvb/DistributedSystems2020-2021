@@ -84,7 +84,6 @@ public class CarRentalServletContextListener implements ServletContextListener {
                 cars.add(new Car(carId++, type, name));
             }
         }
-
         return cars;
     }
 

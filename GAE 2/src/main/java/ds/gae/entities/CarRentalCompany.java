@@ -123,15 +123,35 @@ public class CarRentalCompany {
      *********/
 
     private Car getCar(int uid) {
-        for (Car car : cars) {
+        try {
+            Key carKey = datastore.newKeyFactory()
+                    .addAncestor(PathElement.of("CarRentalCompany", this.getName()))
+                    .setKind("Car").newKey(uid);
+
+            return new Car(datastore.get(carKey));
+        }catch(IllegalArgumentException e){
+            throw new IllegalArgumentException("<" + name + "> No car with uid " + uid);
+        }
+        /*for (Car car : cars) {
             if (car.getId() == uid) {
                 return car;
             }
         }
-        throw new IllegalArgumentException("<" + name + "> No car with uid " + uid);
+        throw new IllegalArgumentException("<" + name + "> No car with uid " + uid);*/
     }
 
     public Set<Car> getCars() {
+        Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind("Car")
+                .setFilter(StructuredQuery.PropertyFilter.hasAncestor(datastore.newKeyFactory().setKind("CarRentalCompany").newKey(this.getName())))
+                .build();
+        QueryResults<Entity> results = datastore.run(query);
+
+        while(results.hasNext()) {
+            Entity car = results.next();
+            cars.add(new Car(car));
+        }
+
         return cars;
     }
 
